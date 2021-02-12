@@ -27,6 +27,17 @@ Feature: Training for Lingo
     And the round was lost
     Then I cannot start a new round
 
+    #Failure path
+    Given I am playing a game
+    And I am already playing a round
+    When I start a new round
+    Then I can not start a new round
+
+    #Failure path
+    Given I start a new round
+    When I do not have game
+    Then I can not start a new round
+
   Scenario Outline: Guessing a word
     Given that the round is still ongoing
     When I take a "<guess>" for the "<word>"
@@ -41,3 +52,18 @@ Feature: Training for Lingo
     Given that the round is still ongoing
     When the word I fill in has the wrong amount of letters
     Then I will receive feedback that my input was wrong
+
+    #Failure path
+    Given that the round is still ongoing
+    When I guess a word more than 5 times
+    Then I have lost the game
+
+    #Failure path
+    Given that the word has been guessed
+    When I try to guess the word
+    Then I will receive feedback that I can not guess anymore
+
+    #Failure path
+    Given that I lost the game
+    When I try to guess the word
+    Then I will receive feedback that I can not guess anymore
