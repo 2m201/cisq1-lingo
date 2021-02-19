@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,11 @@ public class Hint {
     private List<Character> wordToGuess = new ArrayList<>();
 
     public Hint(String wordToGuess, List<Mark> marks, List<Character> previousHint) {
+        if (previousHint.size() != wordToGuess.length()) {
+            throw new InvalidHintException();
+        }
+
+
         for (Character letter : wordToGuess.toCharArray()) {
             this.wordToGuess.add(letter);
         }
@@ -23,7 +30,6 @@ public class Hint {
         int index = 0;
         for(Character letter : previousHint) {
             if (letter == '.') {
-                System.out.println(index);
                 if (marks.get(index) == Mark.CORRECT) {
                     newHint.add(wordToGuess.get(index));
                 } else {

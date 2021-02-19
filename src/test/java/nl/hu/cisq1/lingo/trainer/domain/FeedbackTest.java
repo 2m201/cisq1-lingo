@@ -1,6 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,8 +76,8 @@ class FeedbackTest {
     }
 
     @Test
-    @DisplayName("Guess and mark list are not the same length")
-    void guessAndMarkListHaveDifferentLengths(){
+    @DisplayName("The length of the guess and the mark list are different")
+    void checksLengthOfGuessAndMarkList(){
         assertThrows(InvalidFeedbackException.class,
                 () -> new Feedback("woord", List.of(CORRECT))
         );
@@ -91,6 +92,17 @@ class FeedbackTest {
         List<Character> definiteHint = feedback.giveHint(wordToGuess, previousHint);
 
         assertEquals(expectedHint, definiteHint);
+    }
+
+    @Test
+    @DisplayName("The length of the to be guessed word and the previous hint are different")
+    void checksLengthOfToBeGuessedWordAndPreviousHint(){
+        Feedback feedback = new Feedback("attempt", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+
+        assertThrows(InvalidHintException.class,
+                () -> feedback.giveHint("attempt", List.of('a', '.'))
+
+        );
     }
 
 }
