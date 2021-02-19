@@ -62,4 +62,10 @@ public class Feedback {
                 '}';
     }
 
+    public List<Character> giveHint(String wordToGuess, List<Character> previousHint){
+        Hint hint = new Hint(wordToGuess, this.marks, previousHint);
+
+        return hint.getNewHint();
+    }
+
 }
