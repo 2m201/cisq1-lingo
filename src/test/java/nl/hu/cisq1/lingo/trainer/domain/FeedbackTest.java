@@ -1,7 +1,5 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +14,12 @@ import static nl.hu.cisq1.lingo.trainer.domain.Mark.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FeedbackTest {
-    static Stream<Arguments> provideHintExamples() {
+    static Stream<Arguments> provideMarkExamples(){
         return Stream.of(
-                Arguments.of("brood", List.of('b', '.', '.', '.', '.'), "brouw", List.of(CORRECT, CORRECT, ABSENT, ABSENT, PRESENT), List.of('b', 'r', '.', '.', '.')),
-                Arguments.of("brood", List.of('b', 'r', '.', '.', '.'), "broek", List.of(CORRECT, CORRECT, ABSENT, ABSENT, PRESENT), List.of('b', 'r', '.', '.', '.')),
-                Arguments.of("brood", List.of('b', 'r', '.', 'o', '.'), "vloer", List.of(CORRECT, CORRECT, ABSENT, CORRECT, PRESENT), List.of('b', 'r', '.', 'o', '.')),
-                Arguments.of("brood", List.of('b', '.', '.', '.', '.'), "bongo", List.of(CORRECT, PRESENT, ABSENT, ABSENT, PRESENT), List.of('b', '.', '.', '.', '.')),
-                Arguments.of("brood", List.of('.', '.', '.', '.', '.'), "brouw", List.of(CORRECT, CORRECT, ABSENT, ABSENT, PRESENT), List.of('b', 'r', '.', '.', '.'))
+                Arguments.of("BROOD", List.of('B', '.', '.', '.', '.'), "BLEEK", List.of(CORRECT, ABSENT, ABSENT, ABSENT, ABSENT)),
+                Arguments.of("BROOD", List.of('B', '.', '.', '.', '.'), "PLEUR", List.of(INVALID, INVALID, INVALID, INVALID, INVALID)),
+                Arguments.of("BROOD", List.of('B', '.', '.', '.', '.'), "BROER", List.of(CORRECT, CORRECT, CORRECT, ABSENT, ABSENT)),
+                Arguments.of("PADDEN", List.of('P', '.', '.', '.', '.','.'), "PAADJE", List.of(CORRECT, CORRECT, ABSENT, CORRECT, ABSENT, PRESENT))
         );
     }
 
@@ -30,25 +27,24 @@ class FeedbackTest {
     @DisplayName("Word is guessed if all letters are correct")
     void wordIsGuessed(){
         //P: Arrange
+        String attempt = "PAARD";
+        Word word = new Word("PAARD");
+
 
         //Q: Act
-        String attempt = "PAARD";
-        List<Mark> marks = List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT);
-
-        Feedback feedback = new Feedback(attempt, marks);
+        Feedback feedback = new Feedback(attempt, word, List.of('P', '.', '.', '.', '.'));
 
         //R: Assert
-
         Assertions.assertTrue(feedback.isWordGuessed());
     }
 
     @Test
     @DisplayName("Word is not guessed if not all letters are correct")
     void wordIsNotGuessed(){
-        String attempt = "PAARD";
-        List<Mark> marks = List.of(CORRECT, CORRECT, CORRECT, CORRECT, ABSENT);
+        String attempt = "PAARE";
+        Word word = new Word("PAARD");
 
-        Feedback feedback = new Feedback(attempt, marks);
+        Feedback feedback = new Feedback(attempt, word, List.of('P', '.', '.', '.', '.'));
 
         assertFalse(feedback.isWordGuessed());
     }
@@ -56,10 +52,10 @@ class FeedbackTest {
     @Test
     @DisplayName("Guess is invalid if all letter is invalid")
     void guessIsInvalid(){
-        String attempt = "PAARD";
-        List<Mark> marks = List.of(INVALID, INVALID, INVALID, INVALID, INVALID);
+        String attempt = "REGENBOOM";
+        Word word = new Word("PAARD");
 
-        Feedback feedback = new Feedback(attempt, marks);
+        Feedback feedback = new Feedback(attempt, word, List.of('P', '.', '.', '.', '.'));
 
         assertFalse(feedback.isGuessValid());
     }
@@ -67,42 +63,24 @@ class FeedbackTest {
     @Test
     @DisplayName("Guess is valid if no letter is invalid")
     void guessIsValid(){
-        String attempt = "PAARD";
-        List<Mark> marks = List.of(CORRECT, CORRECT, CORRECT, CORRECT, ABSENT);
+        String attempt = "PEREN";
+        Word word = new Word("PAARD");
 
-        Feedback feedback = new Feedback(attempt, marks);
+        Feedback feedback = new Feedback(attempt, word, List.of('P', '.', '.', '.', '.'));
 
         assertTrue(feedback.isGuessValid());
     }
 
-    @Test
-    @DisplayName("The length of the guess and the mark list are different")
-    void checksLengthOfGuessAndMarkList(){
-        assertThrows(InvalidFeedbackException.class,
-                () -> new Feedback("woord", List.of(CORRECT))
-        );
-    }
-
     @ParameterizedTest
-    @MethodSource("provideHintExamples")
-    @DisplayName("Feedback gives hint based off of the guess and mark list")
-    void feedbackGivesHint(String wordToGuess, List<Character> previousHint, String attempt, List<Mark> marks, List<Character> expectedHint){
-        Feedback feedback = new Feedback(attempt, marks);
+    @MethodSource("provideMarkExamples")
+    @DisplayName("Feedback creates marks based on wordToGuess and attempt")
+    void feedbackCreatesMarks(String wordToGuess, List<Character> beginHint, String attempt, List<Mark> expectedMarks) {
+        Word word = new Word(wordToGuess);
 
-        List<Character> definiteHint = feedback.giveHint(wordToGuess, previousHint);
+        Feedback feedback = new Feedback(attempt, word, beginHint);
 
-        assertEquals(expectedHint, definiteHint);
+        assertEquals(expectedMarks, feedback.getMarks());
     }
 
-    @Test
-    @DisplayName("The length of the to be guessed word and the previous hint are different")
-    void checksLengthOfToBeGuessedWordAndPreviousHint(){
-        Feedback feedback = new Feedback("attempt", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
-
-        assertThrows(InvalidHintException.class,
-                () -> feedback.giveHint("attempt", List.of('a', '.'))
-
-        );
-    }
 
 }

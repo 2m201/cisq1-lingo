@@ -5,40 +5,55 @@ import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static nl.hu.cisq1.lingo.trainer.domain.Mark.INVALID;
+
 public class Hint {
     private List<Character> newHint = new ArrayList<>();
-    private List<Character> wordToGuess = new ArrayList<>();
+    private final Word wordToGuess;
 
-    public Hint(String wordToGuess, List<Mark> marks, List<Character> previousHint) {
-        if (previousHint.size() != wordToGuess.length()) {
+    public Hint(Word wordToGuess, List<Mark> marks, List<Character> previousHint) {
+        if (previousHint.size() != wordToGuess.getSpelling().size()) {
             throw new InvalidHintException();
         }
+        this.wordToGuess = wordToGuess;
 
-
-        for (Character letter : wordToGuess.toCharArray()) {
-            this.wordToGuess.add(letter);
-        }
         createHint(marks, previousHint);
     }
 
-    public void createHint(List<Mark> marks, List<Character> previousHint){
-        //ONLY VISUAL -- NO GIVING EXTRA HINT
-        // word = BROOD
-        // previous HINT : 'B', '.', '.', '.', '.';
-        // mark = "CORRECT", "ABSENT", "PRESENT", "CORRECT", "ABSENT"
+    public Hint(Word wordToGuess) {
+        this.wordToGuess = wordToGuess;
 
+        createFirstHint();
+    }
+
+    public void createHint(List<Mark> marks, List<Character> previousHint){
         int index = 0;
-        for(Character letter : previousHint) {
-            if (letter == '.') {
-                if (marks.get(index) == Mark.CORRECT) {
-                    newHint.add(wordToGuess.get(index));
+
+        if (marks.stream().allMatch(mark -> mark == INVALID)) {
+            this.newHint = previousHint;
+        } else {
+            for (Character letter : previousHint) {
+                if (letter == '.') {
+                    if (marks.get(index) == Mark.CORRECT) {
+                        newHint.add(wordToGuess.getSpelling().get(index));
+                    } else {
+                        newHint.add('.');
+                    }
                 } else {
-                    newHint.add('.');
+                    newHint.add(letter);
                 }
-            } else {
-                newHint.add(letter);
+                index += 1;
             }
-            index += 1;
+        }
+    }
+
+    public void createFirstHint(){
+        for (Character character : wordToGuess.getSpelling()) {
+            if (wordToGuess.getSpelling().indexOf(character) == 0) {
+                newHint.add(character);
+            } else {
+                newHint.add('.');
+            }
         }
     }
 
