@@ -1,6 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
+import org.hibernate.dialect.identity.HANAIdentityColumnSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,6 +41,14 @@ class HintTest {
         Hint hint = new Hint(word);
 
         assertEquals(List.of('h', '.', '.','.','.'), hint.getNewHint());
+    }
+
+    @Test
+    @DisplayName("The to be guessed word and the previous hint have different lengths")
+    void previousHintAndToBeGuessedWordDifferentLength(){
+        Word word = new Word("PAARD");
+
+        assertThrows(InvalidHintException.class, () -> new Hint(word, List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT, Mark.ABSENT), List.of('P')));
     }
 
 }

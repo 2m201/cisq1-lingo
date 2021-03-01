@@ -112,5 +112,4 @@ public class Feedback {
                 '}';
     }
 
-    //todo add equals, hashcode and tostring back
 }

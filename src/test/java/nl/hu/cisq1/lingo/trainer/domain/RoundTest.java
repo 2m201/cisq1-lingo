@@ -25,7 +25,6 @@ class RoundTest {
         Round round = new Round(word);
 
         round.makeGuess("PINT");
-
     }
 
     @Test
@@ -39,7 +38,6 @@ class RoundTest {
         round.makeGuess("PLEE");
         round.makeGuess("PEEN");
         round.makeGuess("PEES");
-
 
         assertThrows(InvalidRoundException.class, () -> round.makeGuess("PEER"));
     }
