@@ -6,32 +6,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Round {
-    private Word wordToBeGuessed;
+    private final Word wordToBeGuessed;
     private List<Feedback> feedbackList;
-    private Hint beginHint;
+    private final Hint beginHint;
 
     public Round(Word wordToBeGuessed){
         this.wordToBeGuessed = wordToBeGuessed;
 
-        feedbackList = new ArrayList<>();
-        this.beginHint = new Hint(wordToBeGuessed);
+        this.feedbackList = new ArrayList<>();
+        this.beginHint = new Hint(wordToBeGuessed, this.feedbackList, null);
     }
 
-    public Hint makeGuess(String attempt) {
+    public void makeGuess(String attempt) {
+        checkIfPlayerCanGuess();
+
+        Feedback feedback = new Feedback(attempt, wordToBeGuessed);
+        feedbackList.add(feedback);
+    }
+
+    public Hint getHint(){ return new Hint(wordToBeGuessed, feedbackList, this.beginHint); }
+
+    public void checkIfPlayerCanGuess(){
         if (feedbackList.size() == 5) {
             throw new InvalidRoundException();
-        } else if (feedbackList.size() ==0) {
-            Feedback feedback = new Feedback(attempt, wordToBeGuessed, beginHint.getNewHint());
-
-            feedbackList.add(feedback);
-            return feedback.getHint();
         }
-        Feedback lastFeedback = feedbackList.get(feedbackList.size() - 1);
-
-        Feedback feedback = new Feedback(attempt, wordToBeGuessed, lastFeedback.getHint().getNewHint());
-        feedbackList.add(feedback);
-        return feedback.getHint();
-
     }
 
     public boolean isWordGuessed(){
@@ -44,4 +42,7 @@ public class Round {
         return beginHint;
     }
 
+    public List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
 }

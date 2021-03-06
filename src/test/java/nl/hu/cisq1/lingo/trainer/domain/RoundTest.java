@@ -28,6 +28,19 @@ class RoundTest {
     }
 
     @Test
+    @DisplayName("Getting hint after taking a guess")
+    void gettingAHint(){
+        Word word = new Word("PEER");
+        Round round = new Round(word);
+
+        round.makeGuess("PEIN");
+        round.makeGuess("PAPA");
+        round.makeGuess("PEEN");
+
+        assertEquals(List.of('P', 'E', 'E', '.'), round.getHint().getNewHint());
+    }
+
+    @Test
     @DisplayName("Taking a guess in a round that already has five guesses")
     void takingMoreThanFiveGuesses(){
         Word word = new Word("PEER");

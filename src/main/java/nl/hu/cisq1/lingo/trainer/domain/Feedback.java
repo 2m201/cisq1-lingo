@@ -9,35 +9,25 @@ import static nl.hu.cisq1.lingo.trainer.domain.Mark.*;
 public class Feedback {
     private final String attempt;
     private final Word wordToGuess;
-    private List<Mark> marks;
-    private Hint hint;
+    private final  List<Mark> marks;
 
-    public Feedback(String attempt, Word wordToGuess, List<Character> previousHint) {
+    public Feedback(String attempt, Word wordToGuess) {
         this.attempt = attempt;
         this.wordToGuess = wordToGuess;
         this.marks = new ArrayList<>();
 
         createMarkList();
-
-        this.hint = new Hint(wordToGuess, this.marks, previousHint);
     }
 
-    public boolean isWordGuessed(){
+    public boolean isWordGuessed() {
         return marks.stream().allMatch(mark -> mark == CORRECT);
-
-//        for(Mark mark : marks) {
-//            if (mark != Mark.CORRECT) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
 
     public boolean isGuessValid () {
         return marks.stream().noneMatch(mark -> mark == INVALID);
     }
 
-    private List<Mark> createMarkList(){
+    private void createMarkList(){
         List<Character> attemptCharacterList = new ArrayList<>();
         List<Character> wordToGuessCharacterList = this.wordToGuess.getSpelling();
 
@@ -76,16 +66,10 @@ public class Feedback {
                 index += 1;
             }
         }
-
-        return this.marks;
     }
 
     public List<Mark> getMarks() {
         return marks;
-    }
-
-    public Hint getHint() {
-        return hint;
     }
 
     @Override
