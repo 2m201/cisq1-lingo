@@ -52,6 +52,7 @@ class RoundTest {
         round.makeGuess("PEEN");
         round.makeGuess("PEES");
 
+        assertEquals(5, round.getFeedbackList().size());
         assertThrows(InvalidRoundException.class, () -> round.makeGuess("PEER"));
     }
 

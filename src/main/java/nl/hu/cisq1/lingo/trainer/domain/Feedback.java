@@ -7,16 +7,72 @@ import java.util.Objects;
 import static nl.hu.cisq1.lingo.trainer.domain.Mark.*;
 
 public class Feedback {
-    private final String attempt;
+    private final List<Character> attempt;
     private final Word wordToGuess;
     private final  List<Mark> marks;
 
     public Feedback(String attempt, Word wordToGuess) {
-        this.attempt = attempt;
+        this.attempt = new ArrayList<>();
+        for (Character letter : attempt.toCharArray()) {
+            this.attempt.add(letter);
+        }
         this.wordToGuess = wordToGuess;
         this.marks = new ArrayList<>();
 
         createMarkList();
+    }
+
+    private void createMarkList(){
+        List<Character> wordToGuessCharacterList = this.wordToGuess.getSpelling();
+
+        if (checkIfGuessValid(wordToGuessCharacterList)) {
+            int index = 0;
+            for (Character character : this.attempt) {
+
+                if (character == wordToGuessCharacterList.get(index)) {
+                    this.marks.add(CORRECT);
+                } else if (wordToGuessCharacterList.contains(character) &&
+                        character != wordToGuessCharacterList.get(index)) {
+                    calculatePresentForMarks(wordToGuessCharacterList, character);
+                } else {
+                    this.marks.add(ABSENT);
+                }
+                index += 1;
+            }
+        }
+    }
+
+    private boolean checkIfGuessValid(List<Character> wordToGuess){
+        if (this.attempt.size() != wordToGuess.size() || this.attempt.get(0) != wordToGuess.get(0)) {
+            this.attempt.forEach(character -> this.marks.add(INVALID));
+
+            return false;
+        }
+        return true;
+    }
+
+    private void calculatePresentForMarks(List<Character> wordToGuessList, Character character){
+        long countListAttempt = this.attempt.stream().filter(character::equals).count();
+        long countListPresentMarks = this.marks.stream().filter(mark -> mark == PRESENT).count();
+        long countListWordToBeGuessed = wordToGuessList.stream().filter(character::equals).count();
+        long countListCorrectMarks = this.marks.stream().filter(mark -> mark == CORRECT).count();
+        long countAbsolutePresentMarks = countListPresentMarks + countListCorrectMarks;
+
+        System.out.println(countListAttempt); //2
+        System.out.println(countListPresentMarks); // 0
+        System.out.println(countListWordToBeGuessed); // 1
+        System.out.println(countListCorrectMarks);
+        System.out.println(countAbsolutePresentMarks);
+        System.out.println("----------------");
+
+        if (countListPresentMarks == countListAttempt ||
+                countListAttempt < countListPresentMarks ||
+                countListAttempt == 1 && countListWordToBeGuessed == 1
+                ) {
+            this.marks.add(PRESENT);
+        } else {
+            this.marks.add(ABSENT);
+        }
     }
 
     public boolean isWordGuessed() {
@@ -27,50 +83,7 @@ public class Feedback {
         return marks.stream().noneMatch(mark -> mark == INVALID);
     }
 
-    private void createMarkList(){
-        List<Character> attemptCharacterList = new ArrayList<>();
-        List<Character> wordToGuessCharacterList = this.wordToGuess.getSpelling();
-
-        for (Character letter : attempt.toCharArray()) {
-            attemptCharacterList.add(letter);
-        }
-
-        if (attempt.length() != wordToGuessCharacterList.size() || attemptCharacterList.get(0) != wordToGuessCharacterList.get(0)) {
-            attemptCharacterList.forEach(character -> this.marks.add(INVALID));
-        } else {
-            int index = 0;
-            for (Character character : attemptCharacterList) {
-                long countListAttempt = 0;
-                long countListPresentMarks = 0;
-                long countListCorrectMarks = 0;
-
-                if (character == wordToGuessCharacterList.get(index)) {
-                    this.marks.add(CORRECT);
-                    countListPresentMarks += 1;
-                } else if (wordToGuessCharacterList.contains(character) && character != wordToGuessCharacterList.get(index))  {
-                    countListAttempt += attemptCharacterList.stream().filter(character::equals).count();
-                    countListPresentMarks += this.marks.stream().filter(mark -> mark == PRESENT).count();
-                    countListCorrectMarks += this.marks.stream().filter(mark -> mark == CORRECT).count();
-                    long countListWordToBeGuessed = wordToGuessCharacterList.stream().filter(character::equals).count();
-
-                    if (countListPresentMarks == countListAttempt ||
-                            countListAttempt < countListPresentMarks ||
-                            countListAttempt == 1 && countListWordToBeGuessed == 1) {
-                        this.marks.add(PRESENT);
-                    }else {
-                        this.marks.add(ABSENT);
-                    }
-                } else {
-                    this.marks.add(ABSENT);
-                }
-                index += 1;
-            }
-        }
-    }
-
-    public List<Mark> getMarks() {
-        return marks;
-    }
+    public List<Mark> getMarks() { return marks; }
 
     @Override
     public boolean equals(Object o) {

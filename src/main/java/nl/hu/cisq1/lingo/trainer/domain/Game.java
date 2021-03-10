@@ -27,35 +27,37 @@ public class Game {
         this.gameState = PLAYING;
     }
 
-    public void checkIfNewRoundCanBegin(){
+    private void checkIfNewRoundCanBegin(){
         if (this.gameState != WAITING_FOR_ROUND) {
             throw new InvalidRoundException();
         }
     }
 
-//    public Hint takeGuess(String attempt) {
-//        checkIfGuessCanBeMade();
-//        Round round = rounds.get(rounds.size() - 1);
-//
-//        if (round.isWordGuessed()) {
-//            this.calculateScore(round);
-//            this.gameState = WAITING_FOR_ROUND;
-//        } else if (round.getFeedbackList().size() == 5 && !round.isWordGuessed()){
-//            this.calculateScore(round);
-//            this.gameState = ELIMINATED;
-//        }
-//
-//        return round.makeGuess(attempt);
-//    }
+    public Progress takeGuess(String attempt) {
+        checkIfGuessCanBeMade();
+        Round round = rounds.get(rounds.size() - 1);
+        Feedback feedback = round.makeGuess(attempt);
 
-    public void checkIfGuessCanBeMade(){
+        if (round.isWordGuessed()) {
+            this.calculateScore(round);
+            this.gameState = WAITING_FOR_ROUND;
+        } else if (round.getFeedbackList().size() == 5 && !round.isWordGuessed()){
+            this.calculateScore(round);
+            this.gameState = ELIMINATED;
+        }
+
+        Hint hint = round.getHint();
+        return new Progress(this.score, hint, feedback, rounds.indexOf(round) + 1);
+    }
+
+    private void checkIfGuessCanBeMade(){
         if (this.gameState != PLAYING) {
             throw new InvalidGameException();
         }
     }
 
     public void calculateScore(Round round){
-        this.score += 5 * (round.getFeedbackList().size()) + 5;
+        this.score += 5 * ( 5 - round.getFeedbackList().size()) + 5;
     }
 
     public GameState getGameState() {

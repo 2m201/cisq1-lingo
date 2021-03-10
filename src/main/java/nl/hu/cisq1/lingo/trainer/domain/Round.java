@@ -14,17 +14,19 @@ public class Round {
         this.wordToBeGuessed = wordToBeGuessed;
 
         this.feedbackList = new ArrayList<>();
-        this.beginHint = new Hint(wordToBeGuessed, this.feedbackList, null);
+        this.beginHint = new Hint(wordToBeGuessed, this.feedbackList);
     }
 
-    public void makeGuess(String attempt) {
+    public Feedback makeGuess(String attempt) {
         checkIfPlayerCanGuess();
 
         Feedback feedback = new Feedback(attempt, wordToBeGuessed);
         feedbackList.add(feedback);
+
+        return feedback;
     }
 
-    public Hint getHint(){ return new Hint(wordToBeGuessed, feedbackList, this.beginHint); }
+    public Hint getHint(){ return new Hint(wordToBeGuessed, feedbackList); }
 
     public void checkIfPlayerCanGuess(){
         if (feedbackList.size() == 5) {
