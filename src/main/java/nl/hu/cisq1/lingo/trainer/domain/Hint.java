@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Hint {
-    private List<Character> hint = new ArrayList<>();
+    private List<Character> hintList = new ArrayList<>();
     private final Word wordToGuess;
 
     public Hint(Word wordToGuess, List<Feedback> feedbackList) {
@@ -20,15 +20,15 @@ public class Hint {
             int index = 0;
             List<Mark> marks = feedback.getMarks();
 
-                for (Character letter : this.hint) {
+                for (Character letter : this.hintList) {
                     if (letter == '.') {
                         if (marks.get(index) == Mark.CORRECT) {
-                            this.hint.set(index, wordToGuess.getSpelling().get(index));
+                            this.hintList.set(index, wordToGuess.getSpelling().get(index));
                         } else {
-                            this.hint.set(index, '.');
+                            this.hintList.set(index, '.');
                         }
                     } else {
-                        this.hint.set(index, letter);
+                        this.hintList.set(index, letter);
                     }
                     index += 1;
                 }
@@ -38,12 +38,12 @@ public class Hint {
     private void createFirstHint(){
         for (Character character : wordToGuess.getSpelling()) {
             if (wordToGuess.getSpelling().indexOf(character) == 0) {
-                this.hint.add(character);
+                this.hintList.add(character);
             } else {
-                this.hint.add('.');
+                this.hintList.add('.');
             }
         }
     }
 
-    public List<Character> getNewHint() { return this.hint; }
+    public List<Character> getNewHint() { return this.hintList; }
 }

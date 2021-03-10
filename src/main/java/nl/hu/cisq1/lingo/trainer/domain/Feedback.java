@@ -29,10 +29,10 @@ public class Feedback {
             int index = 0;
             for (Character character : this.attempt) {
 
-                if (character == wordToGuessCharacterList.get(index)) {
+                if (character.equals(wordToGuessCharacterList.get(index))) {
                     this.marks.add(CORRECT);
                 } else if (wordToGuessCharacterList.contains(character) &&
-                        character != wordToGuessCharacterList.get(index)) {
+                        !character.equals( wordToGuessCharacterList.get(index))) {
                     calculatePresentForMarks(wordToGuessCharacterList, character);
                 } else {
                     this.marks.add(ABSENT);
@@ -43,7 +43,7 @@ public class Feedback {
     }
 
     private boolean checkIfGuessValid(List<Character> wordToGuess){
-        if (this.attempt.size() != wordToGuess.size() || this.attempt.get(0) != wordToGuess.get(0)) {
+        if (this.attempt.size() != wordToGuess.size() || !this.attempt.get(0).equals(wordToGuess.get(0))) {
             this.attempt.forEach(character -> this.marks.add(INVALID));
 
             return false;
