@@ -20,15 +20,13 @@ public class Round {
     public Feedback makeGuess(String attempt) {
         checkIfPlayerCanGuess();
 
-        Feedback feedback = new Feedback(attempt, wordToBeGuessed);
+        Feedback feedback = new Feedback(attempt.toUpperCase(), wordToBeGuessed);
         feedbackList.add(feedback);
 
         return feedback;
     }
 
-    public Hint getHint(){ return new Hint(wordToBeGuessed, feedbackList); }
-
-    public void checkIfPlayerCanGuess(){
+    private void checkIfPlayerCanGuess(){
         if (feedbackList.size() == 5) {
             throw new InvalidRoundException();
         }
@@ -39,6 +37,8 @@ public class Round {
 
         return lastFeedback.isWordGuessed();
     }
+
+    public Hint getHint(){ return new Hint(wordToBeGuessed, feedbackList); }
 
     public Hint getBeginHint() {
         return beginHint;

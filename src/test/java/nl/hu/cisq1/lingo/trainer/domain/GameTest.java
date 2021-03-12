@@ -17,48 +17,49 @@ import static nl.hu.cisq1.lingo.trainer.domain.Mark.PRESENT;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
+    private static Word word = new Word("HONDEN");
+
+
     static Stream<Arguments> provideScoreExamples(){
         return Stream.of(
 
         );
     }
 
-//    @Test
-//    @DisplayName("Starting a new game")
-//    void startingNewGame(){
-//        Game game = new Game();
-//
-//        assertEquals(0, game.getScore());
-//        assertEquals(WAITING_FOR_ROUND, game.getGameState());
-//    }
-//
-//    @Test
-//    @DisplayName("Starting a new round")
-//    void startingNewRound(){
-//        Game game = new Game();
-//        Word word = new Word("HONDEN");
-//        game.startNewRound(word);
-//
-//        assertEquals(1, game.getRounds().size());
-//        assertEquals(PLAYING, game.getGameState());
-//    }
-//
-//    @Test
-//    @DisplayName("Starting a new round when game is over")
-//    void startingANewRoundWhenGameIsOver(){
-//    }
-//
-//    @Test
-//    @DisplayName("Starting a new round when already playing a round")
-//    void startingNewRoundWhenAlreadyPlaying(){
-//        Game game = new Game();
-//        Word word = new Word("HONDEN");
-//        game.startNewRound(word);
-//
-//        Word word2 = new Word("zeeman");
-//        assertThrows(InvalidRoundException.class, () -> game.startNewRound(word2));
-//    }
-//
+    @Test
+    @DisplayName("Starting a new game")
+    void startingNewGame(){
+        Game game = new Game();
+
+        assertEquals(0, game.getScore());
+        assertEquals(WAITING_FOR_ROUND, game.getGameState());
+    }
+
+    @Test
+    @DisplayName("Starting a new round")
+    void startingNewRound(){
+        Game game = new Game();
+        game.startNewRound(word);
+
+        assertEquals(1, game.getRounds().size());
+        assertEquals(PLAYING, game.getGameState());
+    }
+
+    @Test
+    @DisplayName("Starting a new round when game is over")
+    void startingANewRoundWhenGameIsOver(){
+    }
+
+    @Test
+    @DisplayName("Starting a new round when already playing a round")
+    void startingNewRoundWhenAlreadyPlaying(){
+        Game game = new Game();
+        game.startNewRound(word);
+
+        Word word2 = new Word("zeeman");
+        assertThrows(InvalidRoundException.class, () -> game.startNewRound(word2));
+    }
+
 //    @Test
 //    @DisplayName("Game gives exception when guess cannot be made")
 //    void makingAGuessWhenNotPossible(){

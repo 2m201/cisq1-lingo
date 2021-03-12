@@ -1,7 +1,5 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
-import org.hibernate.dialect.identity.HANAIdentityColumnSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,12 +12,35 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HintTest {
+    private static Word word = new Word("PAARD");
+
     static Stream<Arguments> provideHintExamples() {
         return Stream.of(
-                Arguments.of("brood", List.of('b', '.', '.', '.', '.'), "brouw", List.of('b', 'r', 'o', '.', '.')),
-                Arguments.of("brood", List.of('b', 'r', '.', '.', '.'), "broek", List.of('b', 'r', 'o', '.', '.')),
-                Arguments.of("brood", List.of('b', 'r', '.', 'o', '.'), "vloer", List.of('b', 'r', '.', 'o', '.')),
-                Arguments.of("brood", List.of('b', '.', '.', '.', '.'), "bongo", List.of('b', '.', '.', '.', '.'))
+                Arguments.of(List.of(new Feedback( "PEREN", word),
+                        new Feedback("PLOOI", word)),
+                        List.of('P', '.','.','.','.')),
+                Arguments.of(List.of(new Feedback( "PEREN", word),
+                        new Feedback("PLOOI", word),
+                        new Feedback("PADDO", word)),
+                        List.of('P', 'A','.','.','.')),
+                Arguments.of(List.of(new Feedback( "PEREN", word),
+                        new Feedback("PLOOI", word),
+                        new Feedback("PADDO", word),
+                        new Feedback("PLAAG", word)),
+                        List.of('P', 'A','A','.','.')),
+                Arguments.of(List.of(new Feedback( "PEREN", word),
+                        new Feedback("PLOOI", word),
+                        new Feedback("PADDO", word),
+                        new Feedback("PLAAG", word),
+                        new Feedback("ZWOER", word)),
+                        List.of('P', 'A','A','.','.')),
+                Arguments.of(List.of(new Feedback( "PEREN", word),
+                        new Feedback("PLOOI", word),
+                        new Feedback("PADDO", word),
+                        new Feedback("PLAAG", word),
+                        new Feedback("ZWOER", word),
+                        new Feedback("PAARD", word)),
+                        List.of('P', 'A','A','R','D'))
         );
     }
 
@@ -30,6 +51,15 @@ class HintTest {
         Round round = new Round(word);
 
         assertEquals(List.of('h', '.', '.','.','.'), round.getBeginHint().getNewHint());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideHintExamples")
+    @DisplayName("Creating a hint based on feedback list")
+    void createHintBasedOnFeedbackList( List<Feedback> feedbacks, List<Character> expectedHint){
+        Hint hint = new Hint(word, feedbacks);
+
+        assertEquals(expectedHint, hint.getNewHint());
     }
 
 }

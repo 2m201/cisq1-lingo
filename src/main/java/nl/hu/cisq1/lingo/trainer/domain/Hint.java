@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,6 @@ public class Hint {
         for (Feedback feedback : feedbackList) {
             int index = 0;
             List<Mark> marks = feedback.getMarks();
-
                 for (Character letter : this.hintList) {
                     if (letter == '.') {
                         if (marks.get(index) == Mark.CORRECT) {

@@ -9,7 +9,7 @@ public class Word {
     public Word(String word) {
         this.spelling = new ArrayList<>();
 
-        for (Character letter : word.toCharArray()) {
+        for (Character letter : word.toUpperCase().toCharArray()) {
             this.spelling.add(letter);
         }
     }
