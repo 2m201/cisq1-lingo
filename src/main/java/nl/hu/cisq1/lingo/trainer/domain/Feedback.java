@@ -40,7 +40,6 @@ public class Feedback {
             }
         }
 
-        int position = 0;
         for (Character character : wordToGuessCharacterList) {
             int attemptPosition = attempt.indexOf(character);
             if (attemptPosition != -1) {
@@ -54,7 +53,6 @@ public class Feedback {
                         this.marks.set(attempt.indexOf(character), PRESENT);
                     }
                 }
-                position += 1;
             }
     }
 

@@ -17,14 +17,11 @@ class ProgressTest {
         game.startNewRound(word);
         Progress progress = game.takeGuess("BEREN");
 
-        assertEquals(progress.getScore(), 0);
-        assertEquals(progress.getRoundNumber(), 1);
-        assertEquals(progress.getHint().getNewHint(), List.of('B', '.', '.', '.', '.'));
-        assertEquals(progress.getFeedback().getMarks(), List.of(Mark.CORRECT,
-                                                                Mark.ABSENT,
-                                                                Mark.PRESENT,
-                                                                Mark.ABSENT,
-                                                                Mark.ABSENT));
+        assertEquals(0, progress.getScore());
+        assertEquals(1, progress.getRoundNumber());
+        assertEquals(List.of('B', '.', '.', '.', '.'), progress.getHint().getNewHint());
+        assertEquals(List.of(Mark.CORRECT, Mark.ABSENT, Mark.PRESENT, Mark.ABSENT, Mark.ABSENT),
+                            progress.getFeedback().getMarks());
 
     }
 

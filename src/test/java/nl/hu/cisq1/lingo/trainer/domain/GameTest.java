@@ -99,8 +99,8 @@ class GameTest {
             game.takeGuess(attempt);
         }
 
-        assertEquals(game.getScore(), expectedScore);
-        assertEquals(game.getGameState(), WAITING_FOR_ROUND);
+        assertEquals(expectedScore, game.getScore());
+        assertEquals(WAITING_FOR_ROUND, game.getGameState());
     }
 
     @Test
@@ -111,9 +111,9 @@ class GameTest {
 
         Progress progress = game.takeGuess("HELDEN");
 
-        assertEquals(progress.getScore(), 0);
-        assertEquals(progress.getRoundNumber(), 1);
-        assertEquals(progress.getHint().getNewHint(), List.of('H', '.', '.', 'D', 'E', 'N'));
-        assertEquals(progress.getFeedback().getMarks(), List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT));
+        assertEquals(0, progress.getScore());
+        assertEquals(1, progress.getRoundNumber());
+        assertEquals(List.of('H', '.', '.', 'D', 'E', 'N'), progress.getHint().getNewHint());
+        assertEquals(List.of(Mark.CORRECT, Mark.ABSENT, Mark.ABSENT, Mark.CORRECT, Mark.CORRECT, Mark.CORRECT), progress.getFeedback().getMarks());
     }
 }

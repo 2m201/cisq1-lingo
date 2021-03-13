@@ -79,7 +79,8 @@ class HintTest {
         Feedback feedback4 = new Feedback("PLEIN", word);
         Feedback feedback5 = new Feedback("PREEK", word);
         Feedback feedback6 = new Feedback("PAARD", word);
+        List<Feedback> feedbacks =  List.of(feedback, feedback2, feedback3, feedback4, feedback5, feedback6);
 
-        assertThrows(InvalidHintException.class, () -> new Hint(word, List.of(feedback, feedback2, feedback3, feedback4, feedback5, feedback6)));
+        assertThrows(InvalidHintException.class, () -> new Hint(word, feedbacks));
     }
 }

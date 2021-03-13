@@ -1,7 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidGameException;
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidRoundException;
 
 import java.util.ArrayList;
 import java.util.List;

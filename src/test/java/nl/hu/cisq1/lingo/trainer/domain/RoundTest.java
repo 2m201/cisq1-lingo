@@ -24,8 +24,8 @@ class RoundTest {
         Word word = new Word("PEER");
         Round round = new Round(word);
 
-        assertEquals(round.getBeginHint().getNewHint(), List.of('P', '.', '.', '.'));
-        assertEquals(round.getFeedbackList().size(), 0);
+        assertEquals(List.of('P', '.', '.', '.'), round.getBeginHint().getNewHint());
+        assertEquals(0, round.getFeedbackList().size());
     }
 
     @Test
@@ -33,8 +33,8 @@ class RoundTest {
     void takingAValidGuess(){
         round.makeGuess("pest");
 
-        assertEquals(round.getHint().getNewHint(), List.of('P', 'E', '.', '.'));
-        assertEquals(round.getFeedbackList().size(), 1);
+        assertEquals(List.of('P', 'E', '.', '.'), round.getHint().getNewHint());
+        assertEquals(1, round.getFeedbackList().size());
     }
 
     @Test
@@ -42,8 +42,8 @@ class RoundTest {
     void takingAnInValidGuess(){
         round.makeGuess("perenboom");
 
-        assertEquals(round.getHint().getNewHint(), List.of('P', '.', '.', '.'));
-        assertEquals(round.getFeedbackList().size(), 1);
+        assertEquals(List.of('P', '.', '.', '.'), round.getHint().getNewHint());
+        assertEquals(1, round.getFeedbackList().size());
     }
 
     @Test
