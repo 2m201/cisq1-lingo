@@ -58,6 +58,19 @@ class RoundTest {
     }
 
     @Test
+    @DisplayName("Taking a guess in a round that has four guesses")
+    void takingFiveGuesses(){
+        round.makeGuess("PINT");
+        round.makeGuess("POND");
+        round.makeGuess("PLEE");
+        round.makeGuess("PEEN");
+        round.makeGuess("PEES");
+
+        assertEquals(5, round.getFeedbackList().size());
+        assertFalse(round.isWordGuessed());
+    }
+
+    @Test
     @DisplayName("Taking a guess in a round that already has five guesses")
     void takingMoreThanFiveGuesses(){
         round.makeGuess("PINT");
