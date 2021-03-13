@@ -10,6 +10,10 @@ public class Hint {
     private final Word wordToGuess;
 
     public Hint(Word wordToGuess, List<Feedback> feedbackList) {
+        if (feedbackList.size() > 5) {
+            throw new InvalidHintException();
+        }
+
         this.wordToGuess = wordToGuess;
 
         createHint(feedbackList);
