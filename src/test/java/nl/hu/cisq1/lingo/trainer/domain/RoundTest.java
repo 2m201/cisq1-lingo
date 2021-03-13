@@ -30,10 +30,19 @@ class RoundTest {
 
     @Test
     @DisplayName("Taking a valid guess")
-    void takingAGuess(){
+    void takingAValidGuess(){
         round.makeGuess("pest");
 
         assertEquals(round.getHint().getNewHint(), List.of('P', 'E', '.', '.'));
+        assertEquals(round.getFeedbackList().size(), 1);
+    }
+
+    @Test
+    @DisplayName("Taking an invalid guess")
+    void takingAnInValidGuess(){
+        round.makeGuess("perenboom");
+
+        assertEquals(round.getHint().getNewHint(), List.of('P', '.', '.', '.'));
         assertEquals(round.getFeedbackList().size(), 1);
     }
 
@@ -71,5 +80,16 @@ class RoundTest {
 
         assertTrue(round.isWordGuessed());
         assertEquals(round.getFeedbackList().size(), 4);
+    }
+
+    @Test
+    @DisplayName("Check that the word has not been guessed")
+    void wordHasNotBeenGuessed(){
+        round.makeGuess("PINT");
+        round.makeGuess("POND");
+        round.makeGuess("PLEE");
+
+        assertFalse(round.isWordGuessed());
+        assertEquals(round.getFeedbackList().size(), 3);
     }
 }

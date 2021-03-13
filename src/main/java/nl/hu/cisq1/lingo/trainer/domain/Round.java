@@ -20,31 +20,31 @@ public class Round {
     public Feedback makeGuess(String attempt) {
         checkIfPlayerCanGuess();
 
-        Feedback feedback = new Feedback(attempt.toUpperCase(), wordToBeGuessed);
-        feedbackList.add(feedback);
+        Feedback feedback = new Feedback(attempt.toUpperCase(), this.wordToBeGuessed);
+        this.feedbackList.add(feedback);
 
         return feedback;
     }
 
     private void checkIfPlayerCanGuess(){
-        if (feedbackList.size() == 5) {
+        if (this.feedbackList.size() == 5) {
             throw new InvalidRoundException();
         }
     }
 
     public boolean isWordGuessed(){
-        Feedback lastFeedback = feedbackList.get(feedbackList.size() - 1);
+        Feedback lastFeedback = this.feedbackList.get(this.feedbackList.size() - 1);
 
         return lastFeedback.isWordGuessed();
     }
 
-    public Hint getHint(){ return new Hint(wordToBeGuessed, feedbackList); }
+    public Hint getHint(){ return new Hint(this.wordToBeGuessed, this.feedbackList); }
 
     public Hint getBeginHint() {
-        return beginHint;
+        return this.beginHint;
     }
 
     public List<Feedback> getFeedbackList() {
-        return feedbackList;
+        return this.feedbackList;
     }
 }
