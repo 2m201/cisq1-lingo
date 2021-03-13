@@ -61,5 +61,4 @@ class HintTest {
 
         assertEquals(expectedHint, hint.getNewHint());
     }
-
 }
