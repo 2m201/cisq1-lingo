@@ -13,4 +13,16 @@ public class Progress {
         this.roundNumber = roundNumber;
     }
 
+    public int getScore() {
+        return score;
+    }
+    public Hint getHint() {
+        return hint;
+    }
+    public Feedback getFeedback() {
+        return feedback;
+    }
+    public int getRoundNumber() {
+        return roundNumber;
+    }
 }

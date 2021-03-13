@@ -22,14 +22,14 @@ public class Game {
     public void startNewRound(Word word){
         checkIfNewRoundCanBegin();
 
-        Round newRound = new Round(word);
-        rounds.add(newRound);
+        Round round = new Round(word);
+        rounds.add(round);
         this.gameState = PLAYING;
     }
 
     private void checkIfNewRoundCanBegin(){
         if (this.gameState != WAITING_FOR_ROUND) {
-            throw new InvalidRoundException();
+            throw new InvalidGameException();
         }
     }
 
