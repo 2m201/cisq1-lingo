@@ -2,14 +2,27 @@ package nl.hu.cisq1.lingo.trainer.domain;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidRoundException;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Entity(name = "round")
 public class Round {
-    private final Word wordToBeGuessed;
-    private List<Feedback> feedbackList;
-    private final Hint beginHint;
+    @Id
+    @GeneratedValue
+    private long id;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Word wordToBeGuessed;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Feedback> feedbackList;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Hint beginHint;
+
+    public Round(){}
     public Round(Word wordToBeGuessed){
         this.wordToBeGuessed = wordToBeGuessed;
 
@@ -46,5 +59,17 @@ public class Round {
 
     public List<Feedback> getFeedbackList() {
         return this.feedbackList;
+    }
+
+    public int getWordLength(){
+        return wordToBeGuessed.getSpelling().size();
+    }
+
+    public Optional<Feedback> getLastFeedback(){
+        if (feedbackList.size() == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(feedbackList.get(feedbackList.size() -1));
     }
 }

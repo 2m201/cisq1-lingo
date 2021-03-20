@@ -1,16 +1,28 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static nl.hu.cisq1.lingo.trainer.domain.Mark.*;
 
+@Entity(name = "feedback")
 public class Feedback {
-    private final List<Character> attempt;
-    private final Word wordToGuess;
-    private final  List<Mark> marks;
+    @Id
+    @GeneratedValue
+    private long id;
 
+    @ElementCollection
+    private List<Character> attempt;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Word wordToGuess;
+
+    @ElementCollection
+    private List<Mark> marks;
+
+    public Feedback(){}
     public Feedback(String attempt, Word wordToGuess) {
         this.attempt = new ArrayList<>();
         for (Character letter : attempt.toCharArray()) {
@@ -32,6 +44,7 @@ public class Feedback {
 
                 if (character.equals(wordToGuessCharacterList.get(index))) {
                     this.marks.add(CORRECT);
+                    wordToGuessCharacterList.set(index, '_');
                 }else {
                     absentCharacters.add(character);
                     this.marks.add(ABSENT);
@@ -40,20 +53,12 @@ public class Feedback {
             }
         }
 
-        for (Character character : wordToGuessCharacterList) {
-            int attemptPosition = attempt.indexOf(character);
-            if (attemptPosition != -1) {
-                long countListAttempt = this.attempt.stream().filter(character::equals).count();
-                long countListWordToBeGuessed = wordToGuessCharacterList.stream().filter(character::equals).count();
-                if (absentCharacters.contains(character) &&
-                        this.marks.get(attemptPosition) == ABSENT &&
-                        countListAttempt <= countListWordToBeGuessed
-                        ) {
-                        absentCharacters.remove(character);
-                        this.marks.set(attempt.indexOf(character), PRESENT);
-                    }
-                }
+        for (Character character : this.attempt) {
+            if(absentCharacters.contains(character) && wordToGuessCharacterList.contains(character)){
+                absentCharacters.remove(character);
+                this.marks.set(attempt.indexOf(character), PRESENT);
             }
+        }
     }
 
     private boolean checkIfGuessValid(List<Character> wordToGuess){

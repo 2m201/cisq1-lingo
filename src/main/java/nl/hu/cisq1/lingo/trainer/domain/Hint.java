@@ -2,20 +2,28 @@ package nl.hu.cisq1.lingo.trainer.domain;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity(name = "hint")
 public class Hint {
-    private List<Character> hintList = new ArrayList<>();
-    private final Word wordToGuess;
+    @Id
+    @GeneratedValue
+    private long id;
 
+    @ElementCollection
+    private List<Character> hintList = new ArrayList<>();
+
+    @OneToOne
+    private Word wordToGuess;
+
+    public Hint(){}
     public Hint(Word wordToGuess, List<Feedback> feedbackList) {
         if (feedbackList.size() > 5) {
             throw new InvalidHintException();
         }
-
         this.wordToGuess = wordToGuess;
-
         createHint(feedbackList);
     }
 

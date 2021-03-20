@@ -1,6 +1,8 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-public enum GameState {
+import java.io.Serializable;
+
+public enum GameState implements Serializable {
     WAITING_FOR_ROUND,
     PLAYING,
     ELIMINATED
