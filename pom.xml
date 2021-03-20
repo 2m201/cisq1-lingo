@@ -109,9 +109,9 @@
 
                     <execution>
                         <id>jacoco-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
 <!--                        <configuration>-->
 <!--                            <rules>-->
 <!--                                <rule>-->
