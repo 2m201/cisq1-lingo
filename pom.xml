@@ -107,8 +107,8 @@
                         </configuration>
                     </execution>
 
-                    <execution>
-                        <id>jacoco-check</id>
+<!--                    <execution>-->
+<!--                        <id>jacoco-check</id>-->
 <!--                        <goals>-->
 <!--                            <goal>check</goal>-->
 <!--                        </goals>-->
@@ -136,7 +136,7 @@
 <!--                                </rule>-->
 <!--                            </rules>-->
 <!--                        </configuration>-->
-                    </execution>
+<!--                    </execution>-->
                 </executions>
             </plugin>
 
