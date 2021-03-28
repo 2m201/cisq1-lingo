@@ -85,20 +85,19 @@ public class Feedback {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Feedback feedback = (Feedback) o;
-        return Objects.equals(attempt, feedback.attempt) &&
-                Objects.equals(wordToGuess, feedback.wordToGuess) &&
-                Objects.equals(marks, feedback.marks);
+        return id == feedback.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attempt, wordToGuess, marks);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Feedback{" +
-                "attempt='" + attempt + '\'' +
+                "id=" + id +
+                ", attempt=" + attempt +
                 ", wordToGuess=" + wordToGuess +
                 ", marks=" + marks +
                 '}';

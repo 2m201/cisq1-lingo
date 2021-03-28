@@ -2,9 +2,10 @@ package nl.hu.cisq1.lingo.trainer.application;
 
 import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidGameException;
+import nl.hu.cisq1.lingo.trainer.application.exception.NoGameFoundException;
 import nl.hu.cisq1.lingo.words.application.WordService;
 import nl.hu.cisq1.lingo.trainer.presentation.Progress;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,23 +14,29 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class GameServiceTest {
-    WordService wordService = mock(WordService.class);
+    private final WordService wordService = mock(WordService.class);
+    private SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+
+    @BeforeEach
+    void beforeEach() {
+        when(wordService.provideRandomWord(any())).thenReturn("geeuw");
+    }
 
     @Test
     @DisplayName("Finding a game that does not exist")
     void findingANonExistingGame() {
-        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         when(gameRepository.findById(any())).thenReturn(Optional.empty());
+
         GameService gameService = new GameService(wordService, gameRepository);
 
-        assertThrows(InvalidGameException.class, () -> gameService.findGame(12));
+        assertThrows(NoGameFoundException.class, () -> gameService.findGame(12));
     }
 
     @Test
     @DisplayName("Finding a game")
     void findingGame() {
-        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         Game game = new Game();
 
         when(gameRepository.findById(any())).thenReturn(Optional.of(game));
@@ -42,7 +49,6 @@ class GameServiceTest {
     @DisplayName("Creating a game also creates a round")
     void createGameCreatesRound(){
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
-        when(wordService.provideRandomWord(any())).thenReturn("geeuw");
 
         GameService gameService = new GameService(wordService, gameRepository);
         Progress progress = gameService.startNewGame();
@@ -54,7 +60,6 @@ class GameServiceTest {
     @DisplayName("Saves a game after creating")
     void saveGameAfterCreate(){
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
-        when(wordService.provideRandomWord(any())).thenReturn("geeuw");
         GameService gameService = new GameService(wordService, gameRepository);
 
         gameService.startNewGame();
@@ -62,41 +67,36 @@ class GameServiceTest {
         verify(gameRepository, times(1)).save(any());
     }
 
-//    @Test
-//    @DisplayName("Starting a new round when possible")
-//    void startNewRound(){
-//        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
-//        when(wordService.provideRandomWord(5)).thenReturn("geeuw");
-//
-//        Game game = new Game();
-//
-//        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
-//
-//        GameService gameService = new GameService(wordService, gameRepository);
-//        Progress progress = gameService.startNewGame();
-//        System.out.println(progress);
-//        Progress progress1 = gameService.takeAGuess(progress.getGameId(), "geeuw");
-//        System.out.println(progress1);
-////
-////        when(wordService.provideRandomWord(6)).thenReturn("banaan");
-////        Progress progress1 = gameService.startNewRound(progress.getGameId());
-//
-////        assertEquals(2, progress1.getRoundNumber());
-//    }
+    @Test
+    @DisplayName("Starting a new round when possible")
+    void startNewRound(){
+        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+        GameService gameService = new GameService(wordService, gameRepository);
+        Game game = new Game();
 
-//    @Test
-//    @DisplayName("Taking a valid guess")
-//    void takingGuess(){
-//        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
-//        when(wordService.provideRandomWord(5)).thenReturn("geeuw");
-//        Game game = new Game();
-//
-//        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
-//
-//        GameService gameService = new GameService(wordService, gameRepository);
-//        Progress progress = gameService.startNewGame();
-//        System.out.println(progress);
-//        Progress progress1 = gameService.takeAGuess(progress.getGameId(), "geeuw");
-//        System.out.println(progress1);
-//    }
+        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+        Progress progress = game.createProgress();
+
+        Progress progress1 = gameService.startNewRound(progress.getGameId());
+
+        assertEquals(1, progress1.getRoundNumber());
+    }
+
+    @Test
+    @DisplayName("Taking a valid guess")
+    void takingGuess(){
+        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+        GameService gameService = new GameService(wordService, gameRepository);
+        Game game = new Game();
+        Progress progress= game.createProgress();
+
+        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+
+        gameService.startNewRound(progress.getGameId());
+
+        Progress progress1 = gameService.takeAGuess(progress.getGameId(), "geeuw");
+
+        assertEquals(25, progress1.getScore());
+    }
+
 }

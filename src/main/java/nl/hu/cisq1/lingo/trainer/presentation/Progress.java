@@ -61,15 +61,4 @@ public class Progress {
         return Objects.hash(score, hint, feedback, roundNumber);
     }
 
-    @Override
-    public String toString() {
-        return "Progress{" +
-                "gameId=" + gameId +
-                ", gameState=" + gameState +
-                ", score=" + score +
-                ", hint=" + hint.getNewHint() +
-                ", feedback=" + feedback +
-                ", roundNumber=" + roundNumber +
-                '}';
-    }
 }

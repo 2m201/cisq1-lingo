@@ -1,6 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidRoundException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Round {
     private List<Feedback> feedbackList;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Hint beginHint;
+    private Hint beginHint; //todo maybe do an el delete?
 
     public Round(){}
     public Round(Word wordToBeGuessed){
@@ -41,24 +41,23 @@ public class Round {
 
     private void checkIfPlayerCanGuess(){
         if (this.feedbackList.size() == 5) {
-            throw new InvalidRoundException();
+            throw new GuessNotValidException("Round has five guesses. Cannot guess anymore");
         }
     }
 
     public boolean isWordGuessed(){
-        Feedback lastFeedback = this.feedbackList.get(this.feedbackList.size() - 1);
+        if (this.feedbackList.size() != 0) {
+            Feedback lastFeedback = this.feedbackList.get(this.feedbackList.size() - 1);
 
-        return lastFeedback.isWordGuessed();
+            return lastFeedback.isWordGuessed();
+        }
+        return false;
     }
 
     public Hint getHint(){ return new Hint(this.wordToBeGuessed, this.feedbackList); }
 
-    public Hint getBeginHint() {
-        return this.beginHint;
-    }
-
-    public List<Feedback> getFeedbackList() {
-        return this.feedbackList;
+    public int getFeedbackListSize() {
+        return this.feedbackList.size();
     }
 
     public int getWordLength(){

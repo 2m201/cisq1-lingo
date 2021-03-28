@@ -1,6 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class Hint {
     public Hint(){}
     public Hint(Word wordToGuess, List<Feedback> feedbackList) {
         if (feedbackList.size() > 5) {
-            throw new InvalidHintException();
+            throw new InvalidFeedbackException("Too many feedback to create hint");
         }
         this.wordToGuess = wordToGuess;
         createHint(feedbackList);

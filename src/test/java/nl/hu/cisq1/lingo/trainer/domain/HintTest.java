@@ -1,6 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidHintException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -81,6 +81,6 @@ class HintTest {
         Feedback feedback6 = new Feedback("PAARD", word);
         List<Feedback> feedbacks =  List.of(feedback, feedback2, feedback3, feedback4, feedback5, feedback6);
 
-        assertThrows(InvalidHintException.class, () -> new Hint(word, feedbacks));
+        assertThrows(InvalidFeedbackException.class, () -> new Hint(word, feedbacks));
     }
 }

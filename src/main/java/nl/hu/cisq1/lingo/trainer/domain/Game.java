@@ -3,7 +3,8 @@ package nl.hu.cisq1.lingo.trainer.domain;
 import nl.hu.cisq1.lingo.trainer.domain.WordStrategy.DefaultWordStrategy;
 import nl.hu.cisq1.lingo.trainer.domain.WordStrategy.WordStrategyConverter;
 import nl.hu.cisq1.lingo.trainer.domain.WordStrategy.WordStrategyInterface;
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidGameException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
 import nl.hu.cisq1.lingo.trainer.presentation.Progress;
 import nl.hu.cisq1.lingo.words.application.WordService;
 
@@ -30,19 +31,21 @@ public class Game {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Round> rounds;
 
-//    @Convert(converter = WordStrategyConverter.class)
-//    private WordStrategyInterface wordStrategyInterface;
-
+    @Convert(converter = WordStrategyConverter.class)
+    private WordStrategyInterface wordStrategyInterface;
 
     public Game(){
         this.gameState = WAITING_FOR_ROUND;
         this.score = 0;
         this.rounds = new ArrayList<>();
+        this.wordStrategyInterface = new DefaultWordStrategy();
     }
 
-    public void startNewRound(Word word){
+    public void startNewRound(WordService wordService){
         checkIfNewRoundCanBegin();
 
+        int previousWordLength = getPreviousWordLength();
+        Word word = this.wordStrategyInterface.generateNextWord(previousWordLength, wordService);
 
         Round round = new Round(word);
         rounds.add(round);
@@ -51,13 +54,13 @@ public class Game {
 
     private void checkIfNewRoundCanBegin(){
         if (this.gameState != WAITING_FOR_ROUND) {
-            throw new InvalidGameException();
+            throw new RoundNotMadeException("This game cannot start a new round.");
         }
     }
 
     private int getPreviousWordLength(){
         if (this.rounds.size() == 0) {
-            return 5;
+            return 7;
         }
         return getLastRound().getWordLength();
     }
@@ -70,7 +73,7 @@ public class Game {
         if (round.isWordGuessed()) {
             this.calculateScore(round);
             this.gameState = WAITING_FOR_ROUND;
-        } else if (round.getFeedbackList().size() == 5 && !round.isWordGuessed()){
+        } else if (round.getFeedbackListSize() == 5 && !round.isWordGuessed()){
             this.calculateScore(round);
             this.gameState = ELIMINATED;
         }
@@ -78,12 +81,12 @@ public class Game {
 
     private void checkIfGuessCanBeMade(){
         if (this.gameState != PLAYING) {
-            throw new InvalidGameException();
+            throw new GuessNotValidException("This game cannot take a guess.");
         }
     }
 
     public void calculateScore(Round round){
-        this.score += 5 * ( 5 - round.getFeedbackList().size()) + 5;
+        this.score += 5 * ( 5 - round.getFeedbackListSize()) + 5;
     }
 
     public Progress createProgress(){

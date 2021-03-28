@@ -14,6 +14,8 @@ import static nl.hu.cisq1.lingo.trainer.domain.Mark.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FeedbackTest {
+    private Word word = new Word("PAARD");
+
     static Stream<Arguments> provideMarkExamples(){
         return Stream.of(
                 Arguments.of("BREAD", "BAARD", List.of(CORRECT, PRESENT, ABSENT, PRESENT, CORRECT)),
@@ -29,7 +31,6 @@ class FeedbackTest {
     void wordIsGuessed(){
         //P: Arrange
         String attempt = "PAARD";
-        Word word = new Word("PAARD");
 
         //Q: Act
         Feedback feedback = new Feedback(attempt, word);
@@ -42,7 +43,6 @@ class FeedbackTest {
     @DisplayName("Word is not guessed if not all letters are correct")
     void wordIsNotGuessed(){
         String attempt = "PAARE";
-        Word word = new Word("PAARD");
 
         Feedback feedback = new Feedback(attempt, word);
 
@@ -53,7 +53,6 @@ class FeedbackTest {
     @DisplayName("Guess is invalid if all letter is invalid")
     void guessIsInvalid(){
         String attempt = "REGENBOOM";
-        Word word = new Word("PAARD");
 
         Feedback feedback = new Feedback(attempt, word);
 
@@ -64,7 +63,6 @@ class FeedbackTest {
     @DisplayName("Guess is valid if no letter is invalid")
     void guessIsValid(){
         String attempt = "PEREN";
-        Word word = new Word("PAARD");
 
         Feedback feedback = new Feedback(attempt, word);
 
