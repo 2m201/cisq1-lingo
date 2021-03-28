@@ -150,7 +150,7 @@ class GameControllerIntegrationTest {
         RequestBuilder request = MockMvcRequestBuilders.post("/lingo/guess/" + id + "/brand");
 
         mockMvc.perform(request)
-                .andExpect(status().isConflict());
+                .andExpect(status().isBadRequest());
     }
 
 }

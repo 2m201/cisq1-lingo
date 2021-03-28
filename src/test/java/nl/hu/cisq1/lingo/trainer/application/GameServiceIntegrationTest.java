@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -105,10 +104,10 @@ class GameServiceIntegrationTest {
         gameService.startNewRound(progress.getGameId());
         Exception exception = assertThrows(RoundNotMadeException.class, () -> gameService.startNewRound(progress.getGameId()));
 
-        String expectedMessaege = "This game cannot start a new round.";
+        String expectedMessage = "This game cannot start a new round.";
         String actualMessage = exception.getMessage();
 
-        assertTrue(actualMessage.contains(expectedMessaege));
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
@@ -126,7 +125,12 @@ class GameServiceIntegrationTest {
         gameService.takeAGuess(id, "gooit");
         gameService.takeAGuess(id, "gooit");
 
-        assertThrows(GuessNotValidException.class, () -> gameService.takeAGuess(id, "gooit"));
+        Exception exception = assertThrows(GuessNotValidException.class, () -> gameService.takeAGuess(id, "gooit"));
+
+        String expectedMessage = "This game cannot take a guess.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
 
