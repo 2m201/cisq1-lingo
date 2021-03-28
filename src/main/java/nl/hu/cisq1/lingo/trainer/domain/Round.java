@@ -19,15 +19,10 @@ public class Round {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Feedback> feedbackList;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Hint beginHint; //todo maybe do an el delete?
-
     public Round(){}
     public Round(Word wordToBeGuessed){
         this.wordToBeGuessed = wordToBeGuessed;
-
         this.feedbackList = new ArrayList<>();
-        this.beginHint = new Hint(wordToBeGuessed, this.feedbackList);
     }
 
     public Feedback makeGuess(String attempt) {
@@ -46,11 +41,12 @@ public class Round {
     }
 
     public boolean isWordGuessed(){
-        if (this.feedbackList.size() != 0) {
+        if (!this.feedbackList.isEmpty()) {
             Feedback lastFeedback = this.feedbackList.get(this.feedbackList.size() - 1);
 
             return lastFeedback.isWordGuessed();
         }
+
         return false;
     }
 
@@ -65,7 +61,7 @@ public class Round {
     }
 
     public Optional<Feedback> getLastFeedback(){
-        if (feedbackList.size() == 0) {
+        if (feedbackList.isEmpty()) {
             return Optional.empty();
         }
 

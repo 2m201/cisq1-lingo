@@ -1,8 +1,8 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.WordStrategy.DefaultWordStrategy;
-import nl.hu.cisq1.lingo.trainer.domain.WordStrategy.WordStrategyConverter;
-import nl.hu.cisq1.lingo.trainer.domain.WordStrategy.WordStrategyInterface;
+import nl.hu.cisq1.lingo.trainer.domain.wordstrategy.DefaultWordStrategy;
+import nl.hu.cisq1.lingo.trainer.domain.wordstrategy.WordStrategyConverter;
+import nl.hu.cisq1.lingo.trainer.domain.wordstrategy.WordStrategyInterface;
 import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
 import nl.hu.cisq1.lingo.trainer.presentation.Progress;
@@ -59,7 +59,7 @@ public class Game {
     }
 
     private int getPreviousWordLength(){
-        if (this.rounds.size() == 0) {
+        if (this.rounds.isEmpty()) {
             return 7;
         }
         return getLastRound().getWordLength();

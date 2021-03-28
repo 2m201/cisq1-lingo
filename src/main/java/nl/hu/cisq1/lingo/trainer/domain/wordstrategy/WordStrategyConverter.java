@@ -1,4 +1,4 @@
-package nl.hu.cisq1.lingo.trainer.domain.WordStrategy;
+package nl.hu.cisq1.lingo.trainer.domain.wordstrategy;
 
 
 import javax.persistence.AttributeConverter;

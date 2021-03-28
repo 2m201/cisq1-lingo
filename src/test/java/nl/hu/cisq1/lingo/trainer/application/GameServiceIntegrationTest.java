@@ -87,11 +87,9 @@ class GameServiceIntegrationTest {
     void takingGuess(){
         Game game = new Game();
         Progress progress= game.createProgress();
-
         when(gameRepository.findById(any())).thenReturn(Optional.of(game));
 
         gameService.startNewRound(progress.getGameId());
-
         Progress progress1 = gameService.takeAGuess(progress.getGameId(), "geeuw");
 
         assertEquals(25, progress1.getScore());
@@ -102,12 +100,15 @@ class GameServiceIntegrationTest {
     void startingRoundWhenImpossible() {
         Game game = new Game();
         Progress progress= game.createProgress();
-
         when(gameRepository.findById(any())).thenReturn(Optional.of(game));
 
         gameService.startNewRound(progress.getGameId());
+        Exception exception = assertThrows(RoundNotMadeException.class, () -> gameService.startNewRound(progress.getGameId()));
 
-        assertThrows(RoundNotMadeException.class, () -> gameService.startNewRound(progress.getGameId()));
+        String expectedMessaege = "This game cannot start a new round.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessaege));
     }
 
     @Test

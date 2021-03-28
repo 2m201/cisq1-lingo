@@ -1,12 +1,10 @@
-package nl.hu.cisq1.lingo.trainer.domain.WordStrategy;
+package nl.hu.cisq1.lingo.trainer.domain.wordstrategy;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.NoWordPossibleException;
 import nl.hu.cisq1.lingo.trainer.domain.Word;
 import nl.hu.cisq1.lingo.words.application.WordService;
 
 public class DefaultWordStrategy implements WordStrategyInterface {
-
-    public DefaultWordStrategy() { }
 
             @Override
             public Word generateNextWord(int lastWordLength, WordService wordService){

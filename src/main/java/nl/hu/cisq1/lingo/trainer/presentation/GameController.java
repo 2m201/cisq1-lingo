@@ -31,13 +31,9 @@ public class GameController {
 
     @PostMapping("/guess/{id}/{attempt}")
     public ResponseEntity<Progress> takeGuess(@PathVariable Long id, @PathVariable String attempt) {
-        try {
             Progress progress = gameService.takeAGuess(id, attempt);
 
             return new ResponseEntity<>(progress, HttpStatus.OK);
-        } catch (GuessNotValidException exception) {
-            return new ResponseEntity(exception.getMessage(), HttpStatus.CONFLICT);
-        }
     }
 
     @PostMapping("/start/round/{id}")
@@ -53,43 +49,35 @@ public class GameController {
     }
 
     @ExceptionHandler(value = GuessNotValidException.class)
-    public ResponseEntity<Map<String, String>> guessNotValidHandler(GuessNotValidException GNV) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Error",  GNV.getMessage());
-
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> guessNotValidHandler(GuessNotValidException e) {
+        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = RoundNotMadeException.class)
-    public ResponseEntity<Map<String, String>> roundNotMadeHandler(RoundNotMadeException RNM) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Error",  RNM.getMessage());
-
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> roundNotMadeHandler(RoundNotMadeException e) {
+        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = NoGameFoundException.class)
-    public ResponseEntity<Map<String, String>> noGameFoundHandler(NoGameFoundException NGM) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Error",  NGM.getMessage());
-
-        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> noGameFoundHandler(NoGameFoundException e) {
+        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = NoWordPossibleException.class)
-    public ResponseEntity<Map<String, String>> noWordPossibleHandler(NoWordPossibleException NWP) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Error",  NWP.getMessage());
-
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> noWordPossibleHandler(NoWordPossibleException e) {
+        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = InvalidFeedbackException.class)
-    public ResponseEntity<Map<String, String>> invalidFeedbackHandler(InvalidFeedbackException IF) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Error",  IF.getMessage());
+    public ResponseEntity<Map<String, String>> invalidFeedbackHandler(InvalidFeedbackException e) {
+        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    private HashMap<String, String> createErrorMessage(String string) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("error",  string);
+
+        return map;
     }
 
 }

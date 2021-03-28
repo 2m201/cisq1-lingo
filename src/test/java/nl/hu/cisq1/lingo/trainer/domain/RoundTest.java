@@ -54,7 +54,7 @@ class RoundTest {
         round.makeGuess("PEENS");
 
         assertEquals(List.of('P', 'E', '.', '.', '.'), round.getHint().getNewHint());
-        assertEquals(round.getFeedbackListSize(), 3);
+        assertEquals(3, round.getFeedbackListSize());
     }
 
     @Test
@@ -93,7 +93,7 @@ class RoundTest {
         round.makeGuess("PEREN");
 
         assertTrue(round.isWordGuessed());
-        assertEquals(round.getFeedbackListSize(), 4);
+        assertEquals(4, round.getFeedbackListSize());
     }
 
     @Test
@@ -104,6 +104,6 @@ class RoundTest {
         round.makeGuess("PLAAG");
 
         assertFalse(round.isWordGuessed());
-        assertEquals(round.getFeedbackListSize(), 3);
+        assertEquals(3, round.getFeedbackListSize());
     }
 }

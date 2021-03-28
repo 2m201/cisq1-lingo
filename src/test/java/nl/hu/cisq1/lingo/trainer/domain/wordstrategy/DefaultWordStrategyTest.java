@@ -1,4 +1,4 @@
-package nl.hu.cisq1.lingo.trainer.domain.WordStrategy;
+package nl.hu.cisq1.lingo.trainer.domain.wordstrategy;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.NoWordPossibleException;
 import nl.hu.cisq1.lingo.trainer.domain.Word;
