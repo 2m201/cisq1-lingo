@@ -36,7 +36,7 @@ class GameControllerIntegrationTest {
 
     @BeforeEach
     void beforeEach() {
-        when(wordService.provideRandomWord(any())).thenReturn("baard");
+        when(wordService.provideRandomWord(5)).thenReturn("baard");
     }
 
     @Test
@@ -148,6 +148,28 @@ class GameControllerIntegrationTest {
         when(gameRepository.findById(any())).thenReturn(Optional.of(game));
 
         RequestBuilder request = MockMvcRequestBuilders.post("/lingo/guess/" + id + "/brand");
+
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Starting a round when the word of last round is too long")
+    void startingRoundWithWrongWordLength() throws Exception {
+        Game game = new Game();
+        when(wordService.provideRandomWord(6)).thenReturn("regenbogen");
+
+        game.startNewRound(wordService);
+        game.takeGuess("baard");
+        game.startNewRound(wordService);
+        game.takeGuess("regenbogen");
+
+        Progress progress = game.createProgress();
+        String id = progress.getGameId().toString();
+
+        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+
+        RequestBuilder request = MockMvcRequestBuilders.post("/lingo/start/round/" + id);
 
         mockMvc.perform(request)
                 .andExpect(status().isBadRequest());

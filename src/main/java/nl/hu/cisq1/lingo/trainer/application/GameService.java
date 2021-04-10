@@ -42,7 +42,7 @@ public class GameService {
     }
 
     public Progress takeAGuess(long id, String attempt){
-        findGame(id);
+        this.findGame(id);
 
         this.game.takeGuess(attempt);
         this.gameRepository.save(game);

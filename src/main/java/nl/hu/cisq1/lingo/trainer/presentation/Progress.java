@@ -4,7 +4,6 @@ import nl.hu.cisq1.lingo.trainer.domain.Feedback;
 import nl.hu.cisq1.lingo.trainer.domain.GameState;
 import nl.hu.cisq1.lingo.trainer.domain.Hint;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public class Progress {
@@ -45,20 +44,7 @@ public class Progress {
         return roundNumber;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Progress progress = (Progress) o;
-        return score == progress.score &&
-                roundNumber == progress.roundNumber &&
-                Objects.equals(hint, progress.hint) &&
-                Objects.equals(feedback, progress.feedback);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(score, hint, feedback, roundNumber);
-    }
+
 
 }

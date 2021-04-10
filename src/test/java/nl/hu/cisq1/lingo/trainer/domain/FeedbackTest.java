@@ -80,5 +80,70 @@ class FeedbackTest {
         assertEquals(expectedMarks, feedback.getMarks());
     }
 
+    @Test
+    @DisplayName("Feedback is the same")
+    void seeIfFeedbackIsEquals(){
+        String attempt = "PEREN";
+
+        Feedback feedback = new Feedback(attempt, word);
+
+        assertTrue(feedback.isGuessValid());
+    }
+
+    @Test
+    @DisplayName("Hashcode is correct")
+    void hashCodeCorrect(){
+        Feedback feedback = new Feedback("POPJE", word);
+        Feedback feedback1 = new Feedback("POPJE", word);
+
+        assertTrue(feedback.hashCode() == feedback1.hashCode());
+    }
+
+    @Test
+    @DisplayName("Hashcode is incorrect")
+    void hashCodeInCorrect(){
+        Feedback feedback = new Feedback("POPJE", word);
+        Feedback feedback1 = new Feedback("PAARD", word);
+
+        assertFalse(feedback.hashCode() == feedback1.hashCode());
+    }
+
+    @Test
+    @DisplayName("Equals is correct")
+    void equalsCorrect(){
+        Feedback feedback = new Feedback("POPJE", word);
+        Feedback feedback1 = new Feedback("POPJE", word);
+
+        assertTrue(feedback.equals(feedback1));
+    }
+
+    @Test
+    @DisplayName("Equals when attempt is different")
+    void equalsAttemptInCorrect(){
+        Feedback feedback = new Feedback("POPJE", word);
+        Feedback feedback1 = new Feedback("PAARD", word);
+
+        assertFalse(feedback.equals(feedback1));
+    }
+
+    @Test
+    @DisplayName("Equals when word is different")
+    void equalsWordInCorrect(){
+        Word word1 = new Word("HALLO");
+        Feedback feedback = new Feedback("PAARD", word);
+        Feedback feedback1 = new Feedback("PAARD", word1);
+
+        assertFalse(feedback.equals(feedback1));
+    }
+
+    @Test
+    @DisplayName("Equals method with different object")
+    void equalsDifferentObjectInCorrect(){
+        Feedback feedback = new Feedback("POPJE", word);
+        Round round = new Round(word);
+
+        assertFalse(feedback.equals(round));
+    }
+
 
 }

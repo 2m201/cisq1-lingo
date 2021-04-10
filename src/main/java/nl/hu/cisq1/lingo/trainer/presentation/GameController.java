@@ -10,9 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/lingo")
 public class GameController {
@@ -49,35 +46,24 @@ public class GameController {
     }
 
     @ExceptionHandler(value = GuessNotValidException.class)
-    public ResponseEntity<Map<String, String>> guessNotValidHandler(GuessNotValidException e) {
-        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> guessNotValidHandler(GuessNotValidException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = RoundNotMadeException.class)
-    public ResponseEntity<Map<String, String>> roundNotMadeHandler(RoundNotMadeException e) {
-        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> roundNotMadeHandler(RoundNotMadeException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = NoGameFoundException.class)
-    public ResponseEntity<Map<String, String>> noGameFoundHandler(NoGameFoundException e) {
-        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> noGameFoundHandler(NoGameFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = NoWordPossibleException.class)
-    public ResponseEntity<Map<String, String>> noWordPossibleHandler(NoWordPossibleException e) {
-        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> noWordPossibleHandler(NoWordPossibleException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = InvalidFeedbackException.class)
-    public ResponseEntity<Map<String, String>> invalidFeedbackHandler(InvalidFeedbackException e) {
-        return new ResponseEntity<>(createErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    private HashMap<String, String> createErrorMessage(String string) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("error",  string);
-
-        return map;
-    }
 
 }

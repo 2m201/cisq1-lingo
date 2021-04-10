@@ -13,7 +13,7 @@ public class Feedback {
     @GeneratedValue
     private long id;
 
-    @ElementCollection
+   @ElementCollection
     private List<Character> attempt;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -71,26 +71,28 @@ public class Feedback {
     }
 
     public boolean isWordGuessed() {
-        return marks.stream().allMatch(mark -> mark == CORRECT);
+        return this.marks.stream().allMatch(mark -> mark == CORRECT);
     }
 
     public boolean isGuessValid () {
-        return marks.stream().noneMatch(mark -> mark == INVALID);
+        return this.marks.stream().noneMatch(mark -> mark == INVALID);
     }
 
-    public List<Mark> getMarks() { return marks; }
+    public List<Mark> getMarks() { return this.marks; }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Feedback feedback = (Feedback) o;
-        return id == feedback.id;
+        return Objects.equals(attempt, feedback.attempt) &&
+                Objects.equals(wordToGuess, feedback.wordToGuess) &&
+                Objects.equals(marks, feedback.marks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(attempt, wordToGuess, marks);
     }
 
     @Override

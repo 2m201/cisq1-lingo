@@ -50,12 +50,21 @@ class GameServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("Finding a non existing game")
+    @DisplayName("Finding an existing game")
     void findingExistingGame() {
         Game game = new Game();
         when(gameRepository.findById(any())).thenReturn(Optional.of(game));
 
-        assertEquals(game.createProgress(), gameService.findGame(game.getId()));
+        Progress progressGame = game.createProgress();
+        Progress progressFoundGame = gameService.findGame(game.getId());
+
+        assertEquals(progressGame.getGameId(), progressFoundGame.getGameId());
+        assertEquals(progressGame.getGameState(), progressFoundGame.getGameState());
+        assertEquals(progressGame.getScore(), progressFoundGame.getScore());
+        assertEquals(progressGame.getHint(), progressFoundGame.getHint());
+        assertEquals(progressGame.getFeedback(), progressFoundGame.getFeedback());
+        assertEquals(progressGame.getRoundNumber(), progressGame.getRoundNumber());
+
     }
 
     @Test
