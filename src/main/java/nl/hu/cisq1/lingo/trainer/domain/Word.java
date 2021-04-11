@@ -1,6 +1,9 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,6 @@ public class Word {
 
     public List<Character> getSpelling() {
         List<Character> spelling = new ArrayList<>();
-
 
         for (Character letter : wordList.toUpperCase().toCharArray()) {
             spelling.add(letter);
