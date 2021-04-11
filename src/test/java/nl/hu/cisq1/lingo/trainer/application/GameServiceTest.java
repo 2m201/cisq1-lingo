@@ -18,10 +18,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameServiceTest {
     private final WordService wordService = mock(WordService.class);
     private SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+    private Game game;
 
     @BeforeEach
     void beforeEach() {
-        when(wordService.provideRandomWord(any())).thenReturn("geeuw");
+        when(this.wordService.provideRandomWord(any())).thenReturn("geeuw");
+        this.game = new Game();
     }
 
     @Test
@@ -37,13 +39,11 @@ class GameServiceTest {
     @Test
     @DisplayName("Finding a game")
     void findingGame() {
-        Game game = new Game();
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(this.game));
+        GameService gameService = new GameService(this.wordService, this.gameRepository);
 
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
-        GameService gameService = new GameService(wordService, gameRepository);
-
-        Progress progressGame = game.createProgress();
-        Progress progressFoundGame = gameService.findGame(game.getId());
+        Progress progressGame = this.game.createProgress();
+        Progress progressFoundGame = gameService.findGame(this.game.getId());
 
         assertEquals(progressGame.getGameId(), progressFoundGame.getGameId());
         assertEquals(progressGame.getGameState(), progressFoundGame.getGameState());
@@ -58,7 +58,7 @@ class GameServiceTest {
     void createGameCreatesRound(){
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
 
-        GameService gameService = new GameService(wordService, gameRepository);
+        GameService gameService = new GameService(this.wordService, gameRepository);
         Progress progress = gameService.startNewGame();
 
         assertEquals(1, progress.getRoundNumber());
@@ -68,7 +68,7 @@ class GameServiceTest {
     @DisplayName("Saves a game after creating")
     void saveGameAfterCreate(){
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
-        GameService gameService = new GameService(wordService, gameRepository);
+        GameService gameService = new GameService(this.wordService, gameRepository);
 
         gameService.startNewGame();
 
@@ -79,11 +79,10 @@ class GameServiceTest {
     @DisplayName("Starting a new round when possible")
     void startNewRound(){
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
-        GameService gameService = new GameService(wordService, gameRepository);
-        Game game = new Game();
+        GameService gameService = new GameService(this.wordService, gameRepository);
 
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
-        Progress progress = game.createProgress();
+        when(gameRepository.findById(any())).thenReturn(Optional.of(this.game));
+        Progress progress = this.game.createProgress();
 
         Progress progress1 = gameService.startNewRound(progress.getGameId());
 
@@ -94,11 +93,10 @@ class GameServiceTest {
     @DisplayName("Taking a valid guess")
     void takingGuess(){
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
-        GameService gameService = new GameService(wordService, gameRepository);
-        Game game = new Game();
-        Progress progress= game.createProgress();
+        GameService gameService = new GameService(this.wordService, gameRepository);
+        Progress progress= this.game.createProgress();
 
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+        when(gameRepository.findById(any())).thenReturn(Optional.of(this.game));
 
         gameService.startNewRound(progress.getGameId());
 

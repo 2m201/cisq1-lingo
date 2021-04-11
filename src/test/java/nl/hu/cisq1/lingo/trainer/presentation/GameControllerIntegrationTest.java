@@ -116,6 +116,16 @@ class GameControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Not getting a game")
+    void gettingNoGame() throws Exception {
+        when(gameRepository.findById(any())).thenReturn(Optional.empty());
+
+        RequestBuilder request = MockMvcRequestBuilders.get("/lingo/1");
+
+        mockMvc.perform(request).andExpect(status().isNotFound());
+    }
+
+    @Test
     @DisplayName("Creating a round when not possible")
     void createRoundWhenImpossible() throws Exception {
         Game game = new Game();

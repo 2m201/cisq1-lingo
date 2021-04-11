@@ -3,6 +3,7 @@ package nl.hu.cisq1.lingo.trainer.application;
 import nl.hu.cisq1.lingo.trainer.application.exception.NoGameFoundException;
 import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
+import nl.hu.cisq1.lingo.trainer.domain.GameState;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
 import nl.hu.cisq1.lingo.trainer.presentation.Progress;
@@ -11,6 +12,9 @@ import nl.hu.cisq1.lingo.words.application.WordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
 
@@ -36,27 +41,39 @@ class GameServiceIntegrationTest {
     @MockBean
     private SpringGameRepository gameRepository;
 
+    Game game;
+
     @BeforeEach
     void beforeEach() {
-        when(wordService.provideRandomWord(any())).thenReturn("geeuw");
+        when(this.wordService.provideRandomWord(any())).thenReturn("geeuw");
+        this.game = new Game();
+    }
+
+    static Stream<Arguments> provideScoreExamples(){
+        return Stream.of(
+                Arguments.of(List.of("GEEUW"), 25),
+                Arguments.of(List.of("GANZE", "GEEUW"), 20),
+                Arguments.of(List.of("GANZE","GANZE", "GEEUW"), 15),
+                Arguments.of(List.of("GANZE","GANZE","GANZE", "GEEUW"), 10),
+                Arguments.of(List.of("GANZE","GANZE","GANZE","GANZE", "GEEUW"), 5)
+        );
     }
 
     @Test
     @DisplayName("Finding a non existing game")
     void findingNonExistingGame() {
-        when(gameRepository.findById(any())).thenReturn(Optional.empty());
+        when(this.gameRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThrows(NoGameFoundException.class, () -> gameService.findGame(22));
+        assertThrows(NoGameFoundException.class, () -> this.gameService.findGame(22));
     }
 
     @Test
     @DisplayName("Finding an existing game")
     void findingExistingGame() {
-        Game game = new Game();
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(this.game));
 
-        Progress progressGame = game.createProgress();
-        Progress progressFoundGame = gameService.findGame(game.getId());
+        Progress progressGame = this.game.createProgress();
+        Progress progressFoundGame = this.gameService.findGame(this.game.getId());
 
         assertEquals(progressGame.getGameId(), progressFoundGame.getGameId());
         assertEquals(progressGame.getGameState(), progressFoundGame.getGameState());
@@ -64,77 +81,84 @@ class GameServiceIntegrationTest {
         assertEquals(progressGame.getHint(), progressFoundGame.getHint());
         assertEquals(progressGame.getFeedback(), progressFoundGame.getFeedback());
         assertEquals(progressGame.getRoundNumber(), progressGame.getRoundNumber());
-
     }
 
     @Test
     @DisplayName("Creating a game also creates a round")
     void createGameCreatesRound(){
-        Progress progress = gameService.startNewGame();
+        Progress progress = this.gameService.startNewGame();
 
         assertEquals(1, progress.getRoundNumber());
+    }
+
+    @Test
+    @DisplayName("Creating a new game sets score to zero")
+    void newGameHasScoreZero(){
+        Progress progress = this.gameService.startNewGame();
+
         assertEquals(0, progress.getScore());
     }
 
     @Test
     @DisplayName("Starting a new round when possible")
     void startNewRound(){
-        Game game = new Game();
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
-        Progress progress = game.createProgress();
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(this.game));
+        Progress progress = this.game.createProgress();
 
-        Progress progress1 = gameService.startNewRound(progress.getGameId());
+        Progress progress1 = this.gameService.startNewRound(progress.getGameId());
 
         assertEquals(1, progress1.getRoundNumber());
-        assertEquals(List.of('G', '.', '.','.','.'), progress1.getHint().getNewHint());
+    }
+
+    @Test
+    @DisplayName("Starting a new round has zero feedback")
+    void newRoundHasZeroFeedback(){
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(this.game));
+        Progress progress = this.game.createProgress();
+
+        Progress progress1 = this.gameService.startNewRound(progress.getGameId());
+
         assertNull(progress1.getFeedback());
     }
 
     @Test
-    @DisplayName("Taking a valid guess")
-    void takingGuess(){
-        Game game = new Game();
-        Progress progress= game.createProgress();
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+    @DisplayName("Starting a new round gives a hint")
+    void newRoundHasHint(){
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(this.game));
+        Progress progress = this.game.createProgress();
 
-        gameService.startNewRound(progress.getGameId());
-        Progress progress1 = gameService.takeAGuess(progress.getGameId(), "geeuw");
+        Progress progress1 = this.gameService.startNewRound(progress.getGameId());
 
-        assertEquals(25, progress1.getScore());
+        assertEquals(List.of('G', '.', '.','.','.'), progress1.getHint().getNewHint());
     }
 
     @Test
     @DisplayName("Starting round when not possible")
     void startingRoundWhenImpossible() {
-        Game game = new Game();
-        Progress progress= game.createProgress();
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+        Progress progress = this.game.createProgress();
+        Long id = progress.getGameId();
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(game));
 
-        gameService.startNewRound(progress.getGameId());
-        Exception exception = assertThrows(RoundNotMadeException.class, () -> gameService.startNewRound(progress.getGameId()));
+        this.gameService.startNewRound(id);
 
-        String expectedMessage = "This game cannot start a new round.";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThrows(RoundNotMadeException.class, () -> this.gameService.startNewRound(id));
     }
 
     @Test
     @DisplayName("Taking a guess when round is over")
     void guessingWhenRoundOver() {
-        Game game = new Game();
-        Progress progress= game.createProgress();
+        Progress progress= this.game.createProgress();
         Long id = progress.getGameId();
-        when(gameRepository.findById(any())).thenReturn(Optional.of(game));
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(game));
 
-        gameService.startNewRound(id);
-        gameService.takeAGuess(id, "gooit");
-        gameService.takeAGuess(id, "gooit");
-        gameService.takeAGuess(id, "gooit");
-        gameService.takeAGuess(id, "gooit");
-        gameService.takeAGuess(id, "gooit");
+        this.gameService.startNewRound(id);
+        this.gameService.takeAGuess(id, "gooit");
+        this.gameService.takeAGuess(id, "gooit");
+        this.gameService.takeAGuess(id, "gooit");
+        this.gameService.takeAGuess(id, "gooit");
+        this.gameService.takeAGuess(id, "gooit");
 
-        Exception exception = assertThrows(GuessNotValidException.class, () -> gameService.takeAGuess(id, "gooit"));
+        Exception exception = assertThrows(GuessNotValidException.class, () -> this.gameService.takeAGuess(id, "gooit"));
 
         String expectedMessage = "This game cannot take a guess.";
         String actualMessage = exception.getMessage();
@@ -142,6 +166,31 @@ class GameServiceIntegrationTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
+    @Test
+    @DisplayName("Guessing a word correctly changes the game state")
+    void takingGuess(){
+        Progress progress= this.game.createProgress();
+        when(this.gameRepository.findById(any())).thenReturn(Optional.of(this.game));
 
+        this.gameService.startNewRound(progress.getGameId());
+        Progress progress1 = this.gameService.takeAGuess(progress.getGameId(), "geeuw");
+
+        assertEquals(GameState.WAITING_FOR_ROUND, progress1.getGameState());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideScoreExamples")
+    @DisplayName("Game calculates score after a word has been guessed")
+    void calculatingScore(List<String> attempts, int expectedScore){
+        this.game.startNewRound(this.wordService);
+
+        for(String attempt : attempts) {
+            this.game.takeGuess(attempt);
+        }
+
+        Progress progress = this.game.createProgress();
+
+        assertEquals(expectedScore, progress.getScore());
+    }
 
 }

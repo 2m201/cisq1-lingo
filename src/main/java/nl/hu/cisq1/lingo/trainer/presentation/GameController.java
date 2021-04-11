@@ -3,7 +3,6 @@ package nl.hu.cisq1.lingo.trainer.presentation;
 import nl.hu.cisq1.lingo.trainer.application.GameService;
 import nl.hu.cisq1.lingo.trainer.application.exception.NoGameFoundException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.NoWordPossibleException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
 import org.springframework.http.HttpStatus;

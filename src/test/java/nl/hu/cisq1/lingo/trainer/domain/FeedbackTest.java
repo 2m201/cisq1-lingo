@@ -80,15 +80,15 @@ class FeedbackTest {
         assertEquals(expectedMarks, feedback.getMarks());
     }
 
-    @Test
-    @DisplayName("Feedback is the same")
-    void seeIfFeedbackIsEquals(){
-        String attempt = "PEREN";
-
-        Feedback feedback = new Feedback(attempt, word);
-
-        assertTrue(feedback.isGuessValid());
-    }
+//    @Test
+//    @DisplayName("Feedback is the same")
+//    void seeIfFeedbackIsEquals(){
+//        String attempt = "PEREN";
+//
+//        Feedback feedback = new Feedback(attempt, word);
+//
+//        assertTrue(feedback.isGuessValid());
+//    }
 
     @Test
     @DisplayName("Hashcode is correct")
@@ -96,7 +96,7 @@ class FeedbackTest {
         Feedback feedback = new Feedback("POPJE", word);
         Feedback feedback1 = new Feedback("POPJE", word);
 
-        assertTrue(feedback.hashCode() == feedback1.hashCode());
+        assertEquals(feedback.hashCode(), feedback1.hashCode());
     }
 
     @Test
@@ -105,7 +105,7 @@ class FeedbackTest {
         Feedback feedback = new Feedback("POPJE", word);
         Feedback feedback1 = new Feedback("PAARD", word);
 
-        assertFalse(feedback.hashCode() == feedback1.hashCode());
+        assertNotEquals(feedback.hashCode(), feedback1.hashCode());
     }
 
     @Test
@@ -114,7 +114,7 @@ class FeedbackTest {
         Feedback feedback = new Feedback("POPJE", word);
         Feedback feedback1 = new Feedback("POPJE", word);
 
-        assertTrue(feedback.equals(feedback1));
+        assertEquals(feedback, feedback1);
     }
 
     @Test
@@ -123,7 +123,7 @@ class FeedbackTest {
         Feedback feedback = new Feedback("POPJE", word);
         Feedback feedback1 = new Feedback("PAARD", word);
 
-        assertFalse(feedback.equals(feedback1));
+        assertNotEquals(feedback, feedback1);
     }
 
     @Test
@@ -133,7 +133,7 @@ class FeedbackTest {
         Feedback feedback = new Feedback("PAARD", word);
         Feedback feedback1 = new Feedback("PAARD", word1);
 
-        assertFalse(feedback.equals(feedback1));
+        assertNotEquals(feedback, feedback1);
     }
 
     @Test
@@ -142,7 +142,27 @@ class FeedbackTest {
         Feedback feedback = new Feedback("POPJE", word);
         Round round = new Round(word);
 
-        assertFalse(feedback.equals(round));
+        assertNotEquals(feedback, round);
+    }
+
+    @Test
+    @DisplayName("ToString method is equal")
+    void toStringEqual(){
+        Feedback feedback = new Feedback("POPJE", word);
+        Feedback feedback1 = new Feedback("POPJE", word);
+
+
+        assertEquals(feedback.toString(), feedback1.toString());
+    }
+
+    @Test
+    @DisplayName("ToString method is not equal")
+    void toStringNotEqual(){
+        Feedback feedback = new Feedback("POPJE", word);
+        Feedback feedback1 = new Feedback("PAARD", word);
+
+
+        assertNotEquals(feedback.toString(), feedback1.toString());
     }
 
 
