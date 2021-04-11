@@ -1,6 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotAcceptedException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class Round {
 
     private void checkIfPlayerCanGuess(){
         if (this.feedbackList.size() == 5) {
-            throw new GuessNotValidException("Round has five guesses. Cannot guess anymore");
+            throw new GuessNotAcceptedException("Round has five guesses. Cannot guess anymore");
         }
     }
 
@@ -66,5 +66,9 @@ public class Round {
         }
 
         return Optional.of(feedbackList.get(feedbackList.size() -1));
+    }
+
+    public Word getWordToBeGuessed() {
+        return wordToBeGuessed;
     }
 }

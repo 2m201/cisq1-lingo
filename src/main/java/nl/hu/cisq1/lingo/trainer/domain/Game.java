@@ -4,7 +4,7 @@ import nl.hu.cisq1.lingo.trainer.domain.wordstrategy.DefaultWordStrategy;
 import nl.hu.cisq1.lingo.trainer.domain.wordstrategy.WordStrategyConverter;
 import nl.hu.cisq1.lingo.trainer.domain.wordstrategy.WordStrategyInterface;
 import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotAcceptedException;
 import nl.hu.cisq1.lingo.trainer.presentation.Progress;
 import nl.hu.cisq1.lingo.words.application.WordService;
 
@@ -81,7 +81,7 @@ public class Game {
 
     private void checkIfGuessCanBeMade(){
         if (this.gameState != PLAYING) {
-            throw new GuessNotValidException("This game cannot take a guess.");
+            throw new GuessNotAcceptedException("This game cannot take a guess.");
         }
     }
 
@@ -90,20 +90,30 @@ public class Game {
     }
 
     public Progress createProgress(){
-        if (gameState == PLAYING) {
+        if (this.gameState == PLAYING) {
             return new Progress(this.id,
                     this.gameState,
                     this.score,
                     Optional.of(getLastRound().getHint()),
                     getLastRound().getLastFeedback(),
-                    this.rounds.size());
+                    this.rounds.size(),
+                    Optional.empty());
+        } else if (this.gameState == ELIMINATED) {
+            return new Progress(this.id,
+                    this.gameState,
+                    this.score,
+                    Optional.empty(),
+                    getLastRound().getLastFeedback(),
+                    this.rounds.size(),
+                    Optional.of(getLastRound().getWordToBeGuessed()));
         }
             return new Progress(this.id,
                                 this.gameState,
                                 this.score,
                                 Optional.empty(),
                                 Optional.empty(),
-                                this.rounds.size());
+                                this.rounds.size(),
+                                Optional.empty());
     }
 
     public Round getLastRound(){

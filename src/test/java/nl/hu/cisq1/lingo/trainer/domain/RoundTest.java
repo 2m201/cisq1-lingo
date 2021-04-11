@@ -1,6 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotAcceptedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,7 +81,7 @@ class RoundTest {
         round.makeGuess("PUTTE");
 
         assertEquals(5, round.getFeedbackListSize());
-        assertThrows(GuessNotValidException.class, () -> round.makeGuess("PEREN"));
+        assertThrows(GuessNotAcceptedException.class, () -> round.makeGuess("PEREN"));
     }
 
     @Test

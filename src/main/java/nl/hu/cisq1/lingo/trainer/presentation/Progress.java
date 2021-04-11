@@ -3,6 +3,7 @@ package nl.hu.cisq1.lingo.trainer.presentation;
 import nl.hu.cisq1.lingo.trainer.domain.Feedback;
 import nl.hu.cisq1.lingo.trainer.domain.GameState;
 import nl.hu.cisq1.lingo.trainer.domain.Hint;
+import nl.hu.cisq1.lingo.trainer.domain.Word;
 
 import java.util.Optional;
 
@@ -13,8 +14,9 @@ public class Progress {
     private final Hint hint;
     private final Feedback feedback;
     private final int roundNumber;
+    private final Word wordToGuess;
 
-    public Progress(Long id, GameState gameState, int score, Optional<Hint> hint, Optional<Feedback> feedback, int roundNumber) {
+    public Progress(Long id, GameState gameState, int score, Optional<Hint> hint, Optional<Feedback> feedback, int roundNumber, Optional<Word> wordToGuess) {
         this.gameId = id;
         this.gameState = gameState;
         this.score = score;
@@ -25,6 +27,10 @@ public class Progress {
             this.feedback = null;
         } else this.feedback = feedback.get();
         this.roundNumber = roundNumber;
+        if(wordToGuess.isEmpty()) {
+            this.wordToGuess = null;
+        } else this.wordToGuess = wordToGuess.get();
+
     }
 
     public Long getGameId() {
@@ -43,8 +49,5 @@ public class Progress {
     public int getRoundNumber() {
         return roundNumber;
     }
-
-
-
-
+    public Word getWordToGuess() { return wordToGuess; }
 }

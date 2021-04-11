@@ -4,7 +4,7 @@ import nl.hu.cisq1.lingo.trainer.application.exception.NoGameFoundException;
 import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameState;
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotAcceptedException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
 import nl.hu.cisq1.lingo.trainer.presentation.Progress;
 import nl.hu.cisq1.lingo.words.application.WordService;
@@ -158,7 +158,7 @@ class GameServiceIntegrationTest {
         this.gameService.takeAGuess(id, "gooit");
         this.gameService.takeAGuess(id, "gooit");
 
-        Exception exception = assertThrows(GuessNotValidException.class, () -> this.gameService.takeAGuess(id, "gooit"));
+        Exception exception = assertThrows(GuessNotAcceptedException.class, () -> this.gameService.takeAGuess(id, "gooit"));
 
         String expectedMessage = "This game cannot take a guess.";
         String actualMessage = exception.getMessage();

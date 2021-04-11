@@ -2,7 +2,7 @@ package nl.hu.cisq1.lingo.trainer.presentation;
 
 import nl.hu.cisq1.lingo.trainer.application.GameService;
 import nl.hu.cisq1.lingo.trainer.application.exception.NoGameFoundException;
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotAcceptedException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.NoWordPossibleException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
 import org.springframework.http.HttpStatus;
@@ -44,8 +44,8 @@ public class GameController {
         return new ResponseEntity<>(this.gameService.findGame(id), HttpStatus.OK);
     }
 
-    @ExceptionHandler(value = GuessNotValidException.class)
-    public ResponseEntity<String> guessNotValidHandler(GuessNotValidException e) {
+    @ExceptionHandler(value = GuessNotAcceptedException.class)
+    public ResponseEntity<String> guessNotValidHandler(GuessNotAcceptedException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

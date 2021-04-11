@@ -1,6 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotValidException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessNotAcceptedException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.RoundNotMadeException;
 import nl.hu.cisq1.lingo.trainer.presentation.Progress;
 import nl.hu.cisq1.lingo.words.application.WordService;
@@ -96,7 +96,7 @@ class GameTest {
         game.takeGuess("HELDEN");
         game.takeGuess("HELDEN");
 
-        assertThrows(GuessNotValidException.class, () -> game.takeGuess("HONDEN"));
+        assertThrows(GuessNotAcceptedException.class, () -> game.takeGuess("HONDEN"));
     }
 
     @ParameterizedTest
